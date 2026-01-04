@@ -1,0 +1,12 @@
+{
+    "kiosk": {
+        "enabled": false,
+        "theme": "neon_arcade",
+        "effect": "none"
+    },
+    "pexelsKey": "YOUR_PEXELS_API_KEY_HERE",
+    "global": {
+        "fullscreen": true
+    },
+    "systems": {}
+}

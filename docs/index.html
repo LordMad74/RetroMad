@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RetroMad | L'Émulation Next-Gen</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- MATRIX RAIN BACKGROUND -->
+    <canvas id="matrix-bg"></canvas>
+
+    <!-- NAVIGATION -->
+    <nav>
+        <div class="nav-logo">RETRO<span style="color:var(--neon-green)">MAD</span></div>
+        <div class="nav-links">
+            <a href="#features">Fonctionnalités</a>
+            <a href="#tech">Technologie</a>
+            <a href="#download" class="btn-cta">TÉLÉCHARGER</a>
+        </div>
+    </nav>
+
+    <!-- HEADER / HERO -->
+    <header>
+        <h1 class="glitch" data-text="RETROMAD">RETROMAD</h1>
+        <p class="subtitle">
+            > INITIALISATION DU SYSTÈME...<br>
+            LA STATION D'ÉMULATION ULTIME POUR VOTRE PC.
+        </p>
+        <div style="margin-top: 30px;">
+            <a href="#download" class="big-btn">ENTER THE SYSTEM</a>
+        </div>
+    </header>
+
+    <!-- FEATURES -->
+    <section id="features">
+        <h2>// MODULES DU SYSTÈME</h2>
+        <div class="features-grid">
+
+            <div class="card">
+                <div class="icon">⚡</div>
+                <h3>ZERO CONFIG</h3>
+                <p>
+                    Plus de prise de tête avec les BIOS ou les plugins.
+                    Le noyau RetroMad détecte et configure automatiquement vos roms.
+                    Branchez, jouez.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="icon">👽</div>
+                <h3>KIOSK MODE</h3>
+                <p>
+                    Transformez votre PC en véritable borne d'arcade.
+                    Interface immersive, contrôlable entièrement à la manette.
+                    Attract Mode automatique.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="icon">🧠</div>
+                <h3>NEURAL AI</h3>
+                <p>
+                    Moteur de scraping assisté par IA.
+                    Récupération automatique des méta-données, pochettes et vidéos
+                    pour sublimer votre collection.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- TECH SPECS -->
+    <section id="tech">
+        <h2>// DONNÉES TECHNIQUES</h2>
+        <div class="info-block">
+            <div class="info-text">
+                <h3>ARCHITECTURE HYBRIDE</h3>
+                <p>
+                    RetroMad n'est pas qu'un simple Frontend. C'est un moteur complet
+                    qui fusionne la flexibilité du Web (React/Electron) avec la puissance
+                    brute du C++ (Libretro Cores).
+                </p>
+                <p style="color: #fff; margin-top: 20px;">
+                    > Compatible Windows 10/11<br>
+                    > Support Manettes (Xbox, PS4/5, Switch)<br>
+                    > Rendu Vulkan / DirectX
+                </p>
+            </div>
+            <div class="info-tech">
+                <div class="tech-row"><span>CORE.EXE</span> <span style="color:#0f0">ACTIVE</span></div>
+                <div class="tech-row"><span>REACT.JS</span> <span style="color:#0f0">v18.2</span></div>
+                <div class="tech-row"><span>ELECTRON</span> <span style="color:#0f0">STABLE</span></div>
+                <div class="tech-row"><span>LIBRETRO</span> <span style="color:#0f0">LINKED</span></div>
+                <div class="tech-row"><span>FPS</span> <span style="color:#0f0">UNLOCKED</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DOWNLOAD -->
+    <section id="download" class="download-area">
+        <h2>// TÉLÉCHARGEMENT</h2>
+        <p style="margin-bottom: 40px; font-size: 1.2rem;">
+            VERSION ACTUELLE : <span style="color:#0f0; border:1px solid #0f0; padding:2px 5px;">BÊTA 0.6.5</span>
+        </p>
+
+        <!-- Le lien devra pointer vers la page "Releases" de GitHub -->
+        <a href="https://github.com/LordMad74/RetroMad/releases" class="big-btn">
+            TÉLÉCHARGER L'INSTALLATEUR
+        </a>
+
+        <p style="margin-top: 20px; color: #666; font-size: 0.9rem;">
+            Windows 64-bit uniquement.
+        </p>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>COPYRIGHT © 2026 RETROMAD PROJECT. DESIGNED BY THE MADTRIX.</p>
+        <p style="opacity: 0.5;">Emulation is not a crime. Support original hardware.</p>
+    </footer>
+
+    <script src="matrix.js"></script>
+</body>
+
+</html>

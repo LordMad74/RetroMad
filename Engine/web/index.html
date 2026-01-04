@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RetroMad Mobile</title>
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --accent: #ff2d55;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            background: var(--bg);
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .card {
+            background: var(--glass);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .card:active {
+            transform: scale(0.95);
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .game-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: var(--glass);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .game-item img {
+            width: 50px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .back-btn {
+            background: none;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>RetroMad</h1>
+        <p>Mobile Portal</p>
+    </header>
+
+    <div id="app">
+        <div id="main-view">
+            <h3>Systèmes</h3>
+            <div class="grid" id="system-list">
+                <!-- Loaded via JS -->
+            </div>
+        </div>
+
+        <div id="game-view" style="display:none">
+            <button class="back-btn" onclick="showSystems()">← Retour</button>
+            <h3 id="current-system-name">Jeux</h3>
+            <div class="game-grid" id="game-list">
+                <!-- Loaded via JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allGames = [];
+
+        async function loadGames() {
+            const res = await fetch('/api/games');
+            const data = await res.json();
+            allGames = data.games;
+            renderSystems();
+        }
+
+        function renderSystems() {
+            const systems = [...new Set(allGames.map(g => g.system))];
+            const list = document.getElementById('system-list');
+            list.innerHTML = systems.map(sys => `
+                <div class="card" onclick="showGames('${sys}')">
+                    <div style="font-size: 24px">🎮</div>
+                    <div style="font-weight:bold">${sys}</div>
+                </div>
+            `).join('');
+        }
+
+        function showGames(system) {
+            document.getElementById('main-view').style.display = 'none';
+            document.getElementById('game-view').style.display = 'block';
+            document.getElementById('current-system-name').innerText = system;
+
+            const filtered = allGames.filter(g => g.system === system);
+            const list = document.getElementById('game-list');
+            list.innerHTML = filtered.map(g => `
+                <div class="game-item" onclick="launchGame('${g.system}', '${g.id}')">
+                    <img src="/media/${g.thumbnail || g.image || ''}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%2210%22><rect width=%2210%22 height=%2210%22 fill=%22%23222%22/></svg>'">
+                    <div>${g.name}</div>
+                </div>
+            `).join('');
+        }
+
+        function showSystems() {
+            document.getElementById('main-view').style.display = 'block';
+            document.getElementById('game-view').style.display = 'none';
+        }
+
+        function launchGame(system, id) {
+            window.location.href = `/play/${system}/${id}`;
+        }
+
+        loadGames();
+    </script>
+</body>
+
+</html>

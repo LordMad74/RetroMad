@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+
+# Production
+build/
+dist/
+
+# System Files
+Thumbs.db
+.DS_Store
+
+# User Configuration & Secrets (DO NOT COMMIT)
+# Exclude config files in Content directory
+Content/config.json
+Content/settings.json
+settings.json
+.env
+.env.local
+
+# Content (Roms, Emulators, Media) - generally too heavy for git
+Content/Roms/
+Content/Emulators/
+
+# Skyscraper Data
+SkyscraperData/
+scraper.log
+scraper_log.txt
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

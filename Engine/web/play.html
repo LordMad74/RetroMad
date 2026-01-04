@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RetroMad Player</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            overflow: hidden;
+        }
+
+        #game {
+            width: 100%;
+            height: 100%;
+        }
+
+        .loader {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-family: sans-serif;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="loader" id="loader">Chargement du moteur...</div>
+    <div id="game"></div>
+
+    <script>
+        const pathParts = window.location.pathname.split('/');
+        const system = pathParts[2];
+        const id = pathParts[3];
+
+        // Map system IDs to EmulatorJS core names
+        const coreMap = {
+            'NES': 'nes',
+            'SNES': 'snes',
+            'MEGADRIVE': 'megadrive',
+            'GAMEOY': 'gb',
+            'GAMEBOYCOLOR': 'gbc',
+            'GAMEBOYADVANCE': 'gba',
+            'PSX': 'psx',
+            'N64': 'n64'
+        };
+
+        window.EJS_player = '#game';
+        window.EJS_core = coreMap[system.toUpperCase()] || 'snes';
+        window.EJS_gameUrl = `/rom/${system}/${id}`;
+        window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/'; // Using CDN for assets
+
+        const script = document.createElement('script');
+        script.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
+        script.onload = () => {
+            document.getElementById('loader').style.display = 'none';
+        };
+        document.body.appendChild(script);
+    </script>
+</body>
+
+</html>

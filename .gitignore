@@ -1,0 +1,37 @@
+node_modules
+.DS_Store
+Thumbs.db
+dist
+build
+.cache
+temp
+*.log
+*.zip
+*.7z
+.vscode
+*.exe
+*.dll
+*.asar
+
+# RetroMad Content - Sensitive & Large Files
+Content/
+# Except maybe a placeholder if needed, but usually users create their own.
+
+# Build Output directories to ignore
+dist-win/
+dist-electron/
+dist-installer/
+retromad-portal-win32-x64/
+Engine/dist-win/
+Engine/dist-electron/
+Engine/dist-installer/
+Engine/RetroMad_v*/
+Engine/RetroMad_*.7z
+Engine/RetroMad_*.zip
+# Skyscraper binaries and data
+SkyscraperData/
+Engine/SkyscraperData/
+Engine/Skyscraper/
+# PORTABLE_SKYSCRAPER/
+*.exe
+*.dll

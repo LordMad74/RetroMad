@@ -1,0 +1,135 @@
+﻿Usage: D:\RetroMad\PORTABLE_SKYSCRAPER\Skyscraper\Skyscraper_3.6.12_unsupported_win_version\Skyscraper.exe [options]
+[1;34m-------------------------------------------[0m
+[1;33mRunning Skyscraper v3.6.12 by Lars Muldjord[0m
+[1;34m-------------------------------------------[0m
+Skyscraper looks for compatible game files for the chosen platform (set with '-p'). It allows you to gather and cache media and game information for the files using various scraping modules (set with '-s'). It then lets you generate game lists for the supported frontends by combining all previously cached resources ('game list generation mode' is initiated by simply leaving out the '-s' option). While doing so it also composites game art for all files by following the recipe at '/home/USER/.skyscraper/artwork.xml'.
+
+In addition to the command line options Skyscraper also provides a lot of customizable options for configuration, artwork, game name aliases, resource priorities and much more. Please check the full documentation at 'https://github.com/muldjord/skyscraper/docs' for a detailed explanation of all features.
+
+Remember that most of the following options can also be set in the '/home/USER/.skyscraper/config.ini' file. All cli options and config.ini options are thoroughly documented at the above link.
+
+Options:
+  -?, -h, --help               Displays help on commandline options.
+  --help-all                   Displays help including Qt specific options.
+  -v, --version                Displays version information.
+  -p <PLATFORM>                The platform you wish to scrape.
+                               (Currently supports '3do', '3ds', 'amiga',
+                               'amigacd32', 'amstradcpc', 'apple2', 'arcade',
+                               'arcadia', 'astrocde', 'atari800', 'atari2600',
+                               'atari5200', 'atari7800', 'atarijaguar',
+                               'atarijaguarcd', 'atarilynx', 'atarist',
+                               'atomiswave', 'c16', 'c64', 'c128', 'channelf',
+                               'coco', 'coleco', 'daphne', 'dragon32',
+                               'dreamcast', 'fba', 'fds', 'gameandwatch',
+                               'gamegear', 'gb', 'gba', 'gbc', 'gc', 'genesis',
+                               'intellivision', 'mame-advmame', 'mame-libretro',
+                               'mame-mame4all', 'mastersystem', 'megacd',
+                               'megadrive', 'msx', 'msx2', 'n64', 'naomi',
+                               'nds', 'neogeo', 'neogeocd', 'nes', 'ngp',
+                               'ngpc', 'openbor', 'oric', 'pc', 'pc88', 'pc98',
+                               'pcfx', 'pcengine', 'pcenginecd', 'pokemini',
+                               'ports', 'ps2', 'psp', 'psx', 'saturn',
+                               'scummvm', 'sega32x', 'segacd', 'sg-1000',
+                               'snes', 'steam', 'ti99', 'trs-80', 'vectrex',
+                               'vic20', 'videopac', 'virtualboy', 'wii', 'wiiu',
+                               'wonderswan', 'wonderswancolor', 'x68000', 'x1',
+                               'zmachine', 'zx81', 'zxspectrum'.)
+  -s <MODULE>                  The scraping module you wish to gather resources
+                               from for the platform set with '-p'.
+                               Leave the '-s' option out to enable Skyscraper's
+                               gamelist generation mode.
+                               (WEB: 'arcadedb', 'igdb', 'mobygames',
+                               'openretro', 'screenscraper', 'thegamesdb' and
+                               'worldofspectrum', LOCAL: 'esgamelist' and
+                               'import')
+  -u <KEY/USER:PASSWORD>       userKey or UserID and Password for use with the
+                               selected scraping module.
+                               (Default is none)
+  -i <PATH>                    Folder which contains the game/rom files.
+                               (default is '/home/USER/RetroPie/roms/PLATFORM')
+  -g <PATH>                    Game list export folder.
+                               (default depends on frontend)
+  -o <PATH>                    Game media export folder.
+                               (default depends on frontend)
+  -f <FRONTEND>                The frontend you wish to generate a gamelist
+                               for. Remember to leave out the '-s' option when
+                               using this in order to enable Skyscraper's
+                               gamelist generation mode.
+                               (Currently supports 'emulationstation',
+                               'attractmode' and 'pegasus'. Default is
+                               'emulationstation')
+  -e <STRING>                  Set extra frontend option. This is required by
+                               the 'attractmode' frontend to set the emulator
+                               and optionally for the 'pegasus' frontend to set
+                               the launch command.
+                               (Default is none)
+  -t <1-8>                     Number of scraper threads to use. This might
+                               change depending on the scraping module limits.
+                               (default is 4)
+  -a <FILENAME>                Specify a non-default artwork.xml file to use
+                               when setting up the artwork compositing when in
+                               gamelist generation mode.
+                               (default is '/home/USER/.skyscraper/artwork.xml')
+  -m <0-100>                   Minimum match percentage when comparing search
+                               result titles to filename titles.
+                               (default is 65)
+  -l <0-10000>                 Maximum game description length. Everything
+                               longer than this will be truncated.
+                               (default is 2500)
+  -c <FILENAME>                Use this config file to set up Skyscraper.
+                               (default is '/home/USER/.skyscraper/config.ini')
+  -d <FOLDER>                  Set custom resource cache folder.
+                               (default is
+                               '/home/USER/.skyscraper/cache/PLATFORM')
+  --flags <FLAG1,FLAG2,...>    Allows setting flags that will impact the run in
+                               various ways. See '--flags help' for a list of
+                               all available flags and what they do.
+  --verbosity <0-3>            Print more info while scraping
+                               (Default is 0.)
+  --cache <COMMAND[:OPTIONS]>  This option is the master option for all options
+                               related to the resource cache. It must be
+                               followed by 'COMMAND[:OPTIONS]'.
+                               See '--cache help' for a full description of all
+                               functions.
+  --refresh                    Same as '--cache refresh'.
+  --lang <CODE>                Set preferred result language for scraping
+                               modules that support it.
+                               (Default 'en')
+  --region <CODE>              Add preferred game region for scraping modules
+                               that support it.
+                               (Default prioritization is 'eu', 'us', 'wor' and
+                               'jp' + others in that order)
+  --query <QUERY>              Allows you to set a custom search query (eg.
+                               'rick+dangerous' for name based modules or
+                               'sha1=CHECKSUM', 'md5=CHECKSUM' or
+                               'romnom=FILENAME' for the 'screenscraper'
+                               module). Requires the single rom filename you
+                               wish to override for to be passed on command line
+                               as well, otherwise it will be ignored.
+  --startat <FILENAME>         Tells Skyscraper which file to start at. Forces
+                               '--refresh' and '--flags nosubdirs' enabled.
+  --endat <FILENAME>           Tells Skyscraper which file to end at. Forces
+                               '--refresh' and '--flags nosubdirs' enabled.
+  --includefiles <PATTERN>     Tells Skyscraper to only include the files
+                               matching the provided asterisk pattern(s).
+                               Remember to double-quote the pattern to avoid
+                               weird behaviour. You can add several patterns by
+                               separating them with ','. In cases where you need
+                               to match for a comma you need to escape it as
+                               '\,'. (Pattern example: '"Super*,*Fighter*"')
+  --excludefiles <PATTERN>     Tells Skyscraper to always exclude the files
+                               matching the provided asterisk pattern(s).
+                               Remember to double-quote the pattern to avoid
+                               weird behaviour. You can add several patterns by
+                               separating them with ','. In cases where you need
+                               to match for a comma you need to escape it as
+                               '\,'. (Pattern example: '"*[BIOS]*,*proto*"')
+  --fromfile <FILENAME>        Tells Skyscraper to load the list of filenames
+                               to work on from a file. This file can be
+                               generated with the '--cache report:missing'
+                               option or made manually.
+  --maxfails <1-200>           Sets the allowed number of initial 'Not found'
+                               results before rage-quitting. (Default is 42)
+  --addext <EXTENSION(S)>      Add this or these file extension(s) to accepted
+                               file extensions during a scraping run. (example:
+                               '*.zst' or '*.zst *.ext')
