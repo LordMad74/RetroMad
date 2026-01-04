@@ -1,7 +1,6 @@
 const canvas = document.getElementById('matrix-bg');
 const ctx = canvas.getContext('2d');
 
-// SET CANVAS SIZE
 function resize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -9,49 +8,67 @@ function resize() {
 window.addEventListener('resize', resize);
 resize();
 
-// MATRIX CONFIG
-const chars = '01010110KATAKANAABCEFHIJKLMNOPQRSTUVWXYZ'; // Ajout caractères style Matrix
-const fontSize = 14;
-const columns = canvas.width / fontSize;
+const chars = '01010101ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$+-*/=%\"\'#&_(),.;:?!\\|{}<>[]^~';
+const fontSize = 16;
+const columns = Math.floor(canvas.width / fontSize);
 const drops = [];
 
-// INITIALIZE DROPS
 for (let i = 0; i < columns; i++) {
-    drops[i] = 1;
+    drops[i] = Math.random() * -100; // Random starting positions for more natural rain
 }
 
 function draw() {
-    // BLACK BG WITH OPACITY FADE
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    ctx.fillStyle = 'rgba(5, 5, 5, 0.1)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = '#0F0'; // GREEN TEXT
-    ctx.font = fontSize + 'px monospace';
+    ctx.font = fontSize + 'px "Share Tech Mono"';
 
     for (let i = 0; i < drops.length; i++) {
         const text = chars.charAt(Math.floor(Math.random() * chars.length));
 
-        // Random white glitch
-        if (Math.random() > 0.98) ctx.fillStyle = '#FFF';
-        else ctx.fillStyle = '#0F0';
+        // Dynamic coloring
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
 
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        // Head of the drop is white
+        if (Math.random() > 0.98) {
+            ctx.fillStyle = '#fff';
+        } else {
+            ctx.fillStyle = '#00ff41';
+        }
 
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+        ctx.fillText(text, x, y);
+
+        if (y > canvas.height && Math.random() > 0.975) {
             drops[i] = 0;
         }
         drops[i]++;
     }
 }
 
-setInterval(draw, 33);
+let lastTime = 0;
+const fps = 30;
+const interval = 1000 / fps;
+
+function animate(timestamp) {
+    if (timestamp - lastTime > interval) {
+        draw();
+        lastTime = timestamp;
+    }
+    requestAnimationFrame(animate);
+}
+
+requestAnimationFrame(animate);
 
 // SMOOTH SCROLL
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-            behavior: 'smooth'
-        });
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
     });
 });

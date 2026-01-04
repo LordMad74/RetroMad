@@ -4,7 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RetroMad | L'Émulation Next-Gen</title>
+    <title>RetroMad | Station d'Émulation Next-Gen</title>
+    <meta name="description"
+        content="Découvrez RetroMad, la station d'émulation ultime pour PC. Interface immersive, mode Kiosk, et scraping par IA pour une collection de jeux légendaire.">
+    <meta property="og:title" content="RetroMad - L'Émulation Réinventée">
+    <meta property="og:description"
+        content="Simplicité, puissance et design futuriste. Le frontend d'émulation pour les passionnés.">
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -15,58 +20,57 @@
 
     <!-- NAVIGATION -->
     <nav>
-        <div class="nav-logo">RETRO<span style="color:var(--neon-green)">MAD</span></div>
+        <div class="nav-logo">RETRO<span>MAD</span></div>
         <div class="nav-links">
-            <a href="#features">Fonctionnalités</a>
-            <a href="#tech">Technologie</a>
-            <a href="#download" class="btn-cta">TÉLÉCHARGER</a>
+            <a href="#features">Système</a>
+            <a href="#tech">Données</a>
+            <a href="#download" class="btn-cta">DÉCRYPTAGE</a>
         </div>
     </nav>
 
-    <!-- HEADER / HERO -->
+    <!-- HERO SECTION -->
     <header>
-        <h1 class="glitch" data-text="RETROMAD">RETROMAD</h1>
-        <p class="subtitle">
-            > INITIALISATION DU SYSTÈME...<br>
+        <div class="glitch-container">
+            <h1 class="glitch">RETROMAD</h1>
+        </div>
+        <div class="subtitle">
+            > CHARGEMENT DU NOYAU v0.6.5... [OK]<br>
             LA STATION D'ÉMULATION ULTIME POUR VOTRE PC.
-        </p>
-        <div style="margin-top: 30px;">
+        </div>
+        <div style="margin-top: 20px;">
             <a href="#download" class="big-btn">ENTER THE SYSTEM</a>
         </div>
     </header>
 
     <!-- FEATURES -->
     <section id="features">
-        <h2>// MODULES DU SYSTÈME</h2>
+        <h2>// PROTOCOLES SYSTÈME</h2>
         <div class="features-grid">
 
             <div class="card">
                 <div class="icon">⚡</div>
                 <h3>ZERO CONFIG</h3>
                 <p>
-                    Plus de prise de tête avec les BIOS ou les plugins.
-                    Le noyau RetroMad détecte et configure automatiquement vos roms.
-                    Branchez, jouez.
+                    Oubliez la complexité technique. Notre moteur configure automatiquement vos cœurs et vos ROMs pour
+                    une expérience plug-and-play immédiate.
                 </p>
             </div>
 
             <div class="card">
-                <div class="icon">👽</div>
+                <div class="icon">🛸</div>
                 <h3>KIOSK MODE</h3>
                 <p>
-                    Transformez votre PC en véritable borne d'arcade.
-                    Interface immersive, contrôlable entièrement à la manette.
-                    Attract Mode automatique.
+                    Une interface 100% immersive pilotable à la manette. Transformez n'importe quel écran en borne
+                    d'arcade premium avec effets visuels dynamiques.
                 </p>
             </div>
 
             <div class="card">
                 <div class="icon">🧠</div>
-                <h3>NEURAL AI</h3>
+                <h3>NEURAL SCRAPING</h3>
                 <p>
-                    Moteur de scraping assisté par IA.
-                    Récupération automatique des méta-données, pochettes et vidéos
-                    pour sublimer votre collection.
+                    Récupération intelligente de vos médias (boxarts, vidéos, fanarts) via notre API optimisée. Donnez à
+                    votre collection l'éclat qu'elle mérite.
                 </p>
             </div>
 
@@ -75,52 +79,54 @@
 
     <!-- TECH SPECS -->
     <section id="tech">
-        <h2>// DONNÉES TECHNIQUES</h2>
+        <h2>// ANALYSE TECHNIQUE</h2>
         <div class="info-block">
             <div class="info-text">
                 <h3>ARCHITECTURE HYBRIDE</h3>
                 <p>
-                    RetroMad n'est pas qu'un simple Frontend. C'est un moteur complet
-                    qui fusionne la flexibilité du Web (React/Electron) avec la puissance
-                    brute du C++ (Libretro Cores).
+                    RetroMad fusionne la flexibilité des technologies Web modernes avec la puissance brute de
+                    l'émulation native. Un moteur conçu pour la performance et la personnalisation extrême.
                 </p>
-                <p style="color: #fff; margin-top: 20px;">
-                    > Compatible Windows 10/11<br>
-                    > Support Manettes (Xbox, PS4/5, Switch)<br>
-                    > Rendu Vulkan / DirectX
-                </p>
+                <div class="stats-list">
+                    > COMPATIBLE WINDOWS 10/11 (X64)<br>
+                    > SUPPORT MULTI-CONTROLLERS (INPUT-READY)<br>
+                    > ACCÉLÉRATION MATÉRIELLE GPU
+                </div>
             </div>
             <div class="info-tech">
-                <div class="tech-row"><span>CORE.EXE</span> <span style="color:#0f0">ACTIVE</span></div>
-                <div class="tech-row"><span>REACT.JS</span> <span style="color:#0f0">v18.2</span></div>
-                <div class="tech-row"><span>ELECTRON</span> <span style="color:#0f0">STABLE</span></div>
-                <div class="tech-row"><span>LIBRETRO</span> <span style="color:#0f0">LINKED</span></div>
-                <div class="tech-row"><span>FPS</span> <span style="color:#0f0">UNLOCKED</span></div>
+                <div class="tech-row"><span>SYSTÈME</span> <span style="color:var(--neon-green)">STABLE</span></div>
+                <div class="tech-row"><span>FRAMEWORK</span> <span style="color:var(--neon-green)">ELECTRON</span></div>
+                <div class="tech-row"><span>NOYAU</span> <span style="color:var(--neon-green)">LIBRETRO</span></div>
+                <div class="tech-row"><span>SCRAPER</span> <span style="color:var(--neon-green)">ACTIF</span></div>
+                <div class="tech-row"><span>SÉCURITÉ</span> <span style="color:var(--neon-green)">OPTIMISÉ</span></div>
             </div>
         </div>
     </section>
 
     <!-- DOWNLOAD -->
     <section id="download" class="download-area">
-        <h2>// TÉLÉCHARGEMENT</h2>
-        <p style="margin-bottom: 40px; font-size: 1.2rem;">
-            VERSION ACTUELLE : <span style="color:#0f0; border:1px solid #0f0; padding:2px 5px;">BÊTA 0.6.5</span>
+        <h2>// ACCÈS RÉSEAU</h2>
+        <div class="version-badge">v0.6.5 - PORTABLE</div>
+        <p
+            style="margin-bottom: 50px; color: #ccc; font-size: 1.1rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+            Téléchargez la dernière version stable de RetroMad. Aucune installation requise, décompressez et jouez.
         </p>
 
-        <!-- Le lien devra pointer vers la page "Releases" de GitHub -->
         <a href="https://github.com/LordMad74/RetroMad/releases" class="big-btn">
-            TÉLÉCHARGER L'INSTALLATEUR
+            TÉLÉCHARGER LE MODULE
         </a>
 
-        <p style="margin-top: 20px; color: #666; font-size: 0.9rem;">
-            Windows 64-bit uniquement.
+        <p style="margin-top: 30px; color: #444; font-size: 0.9rem;">
+            Exigences : Windows 64-bit | DirectX 11+
         </p>
     </section>
 
     <!-- FOOTER -->
     <footer>
-        <p>COPYRIGHT © 2026 RETROMAD PROJECT. DESIGNED BY THE MADTRIX.</p>
-        <p style="opacity: 0.5;">Emulation is not a crime. Support original hardware.</p>
+        <p>CONÇU POUR L'ÉTERNITÉ PAR <strong>THE MADTRIX</strong></p>
+        <p>COPYRIGHT © 2026 RETROMAD PROJECT. TOUS DROITS RÉSERVÉS.</p>
+        <p style="opacity: 0.4; margin-top: 20px;">L'émulation est un acte de préservation. Supportez les développeurs
+            originaux.</p>
     </footer>
 
     <script src="matrix.js"></script>
