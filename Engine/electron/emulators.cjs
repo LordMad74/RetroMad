@@ -595,11 +595,38 @@ class EmulatorManager {
 
         console.log("Launching:", exe, args);
         try {
-            const subprocess = spawn(exe, args, { cwd: raPath, detached: true, stdio: 'ignore' });
-            subprocess.unref();
+            // Kill existing retroarch if any
+            await this.stopCurrentGame();
+
+            this.subprocess = spawn(exe, args, { cwd: raPath, detached: true });
+            this.subprocess.unref();
+
             return { success: true };
         } catch (e) {
             return { success: false, error: 'SPAWN_FAILED: ' + e.message };
+        }
+    }
+
+    async stopCurrentGame() {
+        console.log("Stopping current game...");
+        if (this.subprocess) {
+            try {
+                process.kill(-this.subprocess.pid); // Kill process group
+            } catch (e) {
+                // Ignore if already dead
+            }
+            this.subprocess = null;
+        }
+
+        // Nuclear option for Windows
+        if (process.platform === 'win32') {
+            const { exec } = require('child_process');
+            await new Promise((resolve) => {
+                exec('taskkill /F /IM retroarch.exe /T', (err) => {
+                    // Ignore errors (e.g. process not found)
+                    resolve();
+                });
+            });
         }
     }
 

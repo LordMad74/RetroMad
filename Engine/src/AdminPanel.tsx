@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Settings, Cpu, HardDrive, Download, Monitor, Factory, ChevronRight, X, Save, ShieldAlert, Activity, RefreshCw, Zap } from 'lucide-react';
+import { Settings, Cpu, HardDrive, Download, Monitor, Factory, ChevronRight, X, Save, ShieldAlert, Activity, RefreshCw, Zap, Gamepad } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ConfigPanel from './ConfigPanel';
 import SystemManager from './SystemManager';
@@ -7,12 +7,16 @@ import ManufacturerManager from './ManufacturerManager';
 import ScraperPanel from './ScraperPanel';
 import MaintenancePanel from './MaintenancePanel';
 import Dashboard from './Dashboard';
+import GamepadTester from './GamepadTester';
+import SaveManager from './SaveManager';
+import ThemeEditor from './ThemeEditor';
+import { Palette } from 'lucide-react';
 
 export default function AdminPanel() {
     const [status, setStatus] = useState<{ retroarch: boolean } | null>(null);
     const [installing, setInstalling] = useState(false);
     const [progress, setProgress] = useState({ message: '', percent: 0 });
-    const [activeTab, setActiveTab] = useState<'dashboard' | 'systems' | 'scraper' | 'config' | 'emulator' | 'kiosk' | 'manufacturers' | 'maintenance'>('dashboard');
+    const [activeTab, setActiveTab] = useState<'dashboard' | 'systems' | 'scraper' | 'config' | 'emulator' | 'kiosk' | 'manufacturers' | 'maintenance' | 'gamepad' | 'saves' | 'design'>('dashboard');
     const [kioskConfig, setKioskConfig] = useState({ enabled: false, theme: 'neon_arcade', effect: 'none' });
     const [pexelsKey, setPexelsKey] = useState('');
     const [selectedSection, setSelectedSection] = useState('');
@@ -21,9 +25,14 @@ export default function AdminPanel() {
     const [showRaConfig, setShowRaConfig] = useState(false);
     const [raConfig, setRaConfig] = useState<any>({});
 
+    // Update State
+    const [updateInfo, setUpdateInfo] = useState<any>(null);
+    const [checkingUpdates, setCheckingUpdates] = useState(false);
+
     useEffect(() => {
         checkStatus();
         loadConfig();
+        checkForUpdates();
 
         const cleanup = window.electronAPI.onInstallStatus((data: any) => {
             setInstalling(true);
@@ -109,6 +118,19 @@ export default function AdminPanel() {
         setRaConfig((prev: any) => ({ ...prev, [key]: value }));
     };
 
+    const checkForUpdates = async () => {
+        if (!window.electronAPI.checkUpdates) return;
+        setCheckingUpdates(true);
+        try {
+            const info = await window.electronAPI.checkUpdates();
+            setUpdateInfo(info);
+        } catch (e) {
+            console.error('Update check failed', e);
+        } finally {
+            setCheckingUpdates(false);
+        }
+    };
+
     const tabs = [
         { id: 'dashboard', label: 'Dashboard', icon: <Activity size={20} />, desc: 'Vue d\'ensemble' },
         { id: 'systems', label: 'Systèmes', icon: <Cpu size={20} />, desc: 'Gérer les consoles et chemins' },
@@ -118,6 +140,9 @@ export default function AdminPanel() {
         { id: 'kiosk', label: 'Mode Kiosk', icon: <Monitor size={20} />, desc: 'Interface Bornes d\'Arcade' },
         { id: 'config', label: 'Préférences', icon: <Settings size={20} />, desc: 'Options générales' },
         { id: 'emulator', label: 'Émulateurs', icon: <HardDrive size={20} />, desc: 'Gestion des cœurs' },
+        { id: 'gamepad', label: 'Contrôleurs', icon: <Gamepad size={20} />, desc: 'Tester vos manettes' },
+        { id: 'saves', label: 'Sauvegardes', icon: <Save size={20} />, desc: 'Backup & Cloud' },
+        { id: 'design', label: 'Design', icon: <Palette size={20} />, desc: 'Personnaliser l\'interface' },
     ];
 
     return (
@@ -176,11 +201,36 @@ export default function AdminPanel() {
                         <h2 style={{ margin: 0, fontSize: '1.8em' }}>{tabs.find(t => t.id === activeTab)?.label}</h2>
                         <span style={{ color: '#888' }}>{tabs.find(t => t.id === activeTab)?.desc}</span>
                     </div>
+                    {checkingUpdates && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', opacity: 0.6 }}>
+                            <RefreshCw size={14} className="spin" />
+                            <span style={{ fontSize: '0.8em' }}>Vérification des mises à jour...</span>
+                        </div>
+                    )}
+
                     {installing && (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(255, 45, 85, 0.1)', padding: '8px 20px', borderRadius: '30px', border: '1px solid var(--accent-color)' }}>
                             <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1.5 }} style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--accent-color)' }} />
                             <span style={{ fontSize: '0.9em', fontWeight: 'bold' }}>{progress.message} ({progress.percent}%)</span>
                         </div>
+                    )}
+
+                    {updateInfo?.updateAvailable && (
+                        <motion.div
+                            initial={{ x: 20, opacity: 0 }}
+                            animate={{ x: 0, opacity: 1 }}
+                            style={{
+                                display: 'flex', alignItems: 'center', gap: '12px',
+                                background: 'linear-gradient(90deg, #2563eb, #111)',
+                                padding: '8px 20px', borderRadius: '30px', border: '1px solid #3b82f6',
+                                cursor: 'pointer',
+                                boxShadow: '0 0 20px rgba(37, 99, 235, 0.3)'
+                            }}
+                            onClick={() => window.open(updateInfo.url, '_blank')}
+                        >
+                            <RefreshCw size={16} className="spin" />
+                            <span style={{ fontSize: '0.85em', fontWeight: 'bold' }}>VERSION {updateInfo.latest} DISPONIBLE !</span>
+                        </motion.div>
                     )}
                 </div>
 
@@ -194,6 +244,9 @@ export default function AdminPanel() {
                             {activeTab === 'scraper' && <ScraperPanel />}
                             {activeTab === 'config' && <ConfigPanel />}
                             {activeTab === 'maintenance' && <MaintenancePanel />}
+                            {activeTab === 'gamepad' && <GamepadTester />}
+                            {activeTab === 'saves' && <SaveManager />}
+                            {activeTab === 'design' && <ThemeEditor />}
 
                             {activeTab === 'kiosk' && (
                                 <div style={{ background: 'var(--bg-secondary)', padding: '30px', borderRadius: '16px', border: '1px solid var(--glass-border)' }}>
@@ -219,17 +272,36 @@ export default function AdminPanel() {
                                             </p>
                                         </div>
 
-                                        <div style={{ background: 'rgba(0,0,0,0.2)', padding: '25px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                            <label style={{ display: 'block', marginBottom: '15px', fontWeight: 'bold' }}>Thème d'Interface</label>
-                                            <select
-                                                value={kioskConfig.theme}
-                                                onChange={e => handleConfigChange('theme', e.target.value)}
-                                                style={{ width: '100%', padding: '12px', background: 'rgba(0,0,0,0.4)', border: '1px solid #444', color: 'white', borderRadius: '8px', outline: 'none' }}
-                                            >
-                                                <option value="neon_arcade">Neon Arcade (Style CoinOps)</option>
-                                                <option value="classic_cabinet">Classic Cabinet (Rétro Bois)</option>
-                                                <option value="future_glass">Future Glass (Moderne)</option>
-                                            </select>
+                                        <div style={{ background: 'rgba(0,0,0,0.2)', padding: '25px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', gridColumn: '1 / -1' }}>
+                                            <label style={{ display: 'block', marginBottom: '20px', fontWeight: 'bold', fontSize: '1.2em' }}>Galerie de Thèmes (Interface Arcade)</label>
+                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
+                                                {[
+                                                    { id: 'neon_arcade', name: 'Neon Arcade', desc: 'Style 80s Synthwave', img: 'media://media/images/themes/neon_arcade.png' },
+                                                    { id: 'classic_cabinet', name: 'Classic Cabinet', desc: 'Rétro Bois Noir', img: 'media://media/images/themes/retro_wood.png' },
+                                                    { id: 'future_glass', name: 'Future Glass', desc: 'Modern Minimalist', img: 'media://media/images/themes/future_glass.png' },
+                                                    { id: 'cyber_grid', name: 'Cyber Grid', desc: 'High-Tech Blueprint', img: 'media://media/images/themes/cyber_grid.png' },
+                                                ].map(theme => (
+                                                    <motion.div
+                                                        key={theme.id}
+                                                        whileHover={{ scale: 1.02 }}
+                                                        onClick={() => handleConfigChange('theme', theme.id)}
+                                                        style={{
+                                                            cursor: 'pointer',
+                                                            borderRadius: '12px',
+                                                            overflow: 'hidden',
+                                                            border: kioskConfig.theme === theme.id ? '2px solid var(--accent-color)' : '2px solid transparent',
+                                                            background: 'rgba(255,255,255,0.02)',
+                                                            boxShadow: kioskConfig.theme === theme.id ? '0 0 15px rgba(255, 45, 85, 0.3)' : 'none'
+                                                        }}
+                                                    >
+                                                        <img src={theme.img} alt={theme.name} style={{ width: '100%', height: '120px', objectFit: 'cover', opacity: kioskConfig.theme === theme.id ? 1 : 0.6 }} />
+                                                        <div style={{ padding: '12px' }}>
+                                                            <div style={{ fontWeight: 'bold', fontSize: '0.9em', color: kioskConfig.theme === theme.id ? 'var(--accent-color)' : 'white' }}>{theme.name}</div>
+                                                            <div style={{ fontSize: '0.7em', color: '#666' }}>{theme.desc}</div>
+                                                        </div>
+                                                    </motion.div>
+                                                ))}
+                                            </div>
                                         </div>
 
                                         <div style={{ background: 'rgba(0,0,0,0.2)', padding: '25px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>

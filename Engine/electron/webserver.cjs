@@ -58,35 +58,23 @@ class WebServer {
             next();
         });
 
-        // Serve Web Portal
-        this.app.get('/', (req, res) => {
-            res.sendFile(path.join(__dirname, '../web/index.html'));
+        this.app.use(express.json());
+
+        // API: Get App Status
+        this.app.get('/api/status', (req, res) => {
+            res.json({
+                version: '0.6.5',
+                platform: process.platform,
+                uptime: process.uptime()
+            });
         });
 
-        // Serve Web Player
-        this.app.get('/play/:system/:id', (req, res) => {
-            res.sendFile(path.join(__dirname, '../web/play.html'));
+        // API: Send Command to Main Process
+        this.app.post('/api/command', (req, res) => {
+            const { action, payload } = req.body;
+            app.emit('remote-command', { action, payload });
+            res.json({ success: true });
         });
-
-        // Route to serve ROMs
-        this.app.get('/rom/:system/:id', (req, res) => {
-            const { system, id } = req.params;
-            const dbPath = path.join(this.contentPath, 'gamelist.json');
-
-            if (fs.existsSync(dbPath)) {
-                const db = JSON.parse(fs.readFileSync(dbPath, 'utf8'));
-                const game = db.games.find(g => g.id === id);
-                if (game && fs.existsSync(game.path)) {
-                    res.sendFile(game.path);
-                    return;
-                }
-            }
-            res.status(404).send('Game not found');
-        });
-
-        // Route to serve Media (using static for stability)
-        this.app.use('/media', express.static(this.contentPath));
-        this.app.use('/content', express.static(this.contentPath)); // alias just in case
 
         // Basic API to get game list for mobile
         this.app.get('/api/games', (req, res) => {
@@ -96,6 +84,19 @@ class WebServer {
             } else {
                 res.json({ games: [] });
             }
+        });
+
+        // Serve Static Files (MUST BE AFTER API ROUTES)
+        this.app.use('/', express.static(this.contentPath));
+
+        // Route to serve Web Portal (Mobile Controller)
+        this.app.get('/portal', (req, res) => {
+            res.sendFile(path.join(__dirname, '../web/index.html'));
+        });
+
+        // Redirect root to portal or just keep as is
+        this.app.get('/', (req, res) => {
+            res.sendFile(path.join(__dirname, '../web/index.html'));
         });
 
         this.server = this.app.listen(this.port, '0.0.0.0', () => {

@@ -62,11 +62,28 @@ copyDir(SKYSCRAPER_SRC, SKYSCRAPER_DEST);
 console.log('Creating clean Content structure...');
 if (!fs.existsSync(CONTENT_DEST)) fs.mkdirSync(CONTENT_DEST);
 
-['Roms', 'Emulators', 'Media', 'videos', 'Saves'].forEach(sub => {
+const CONTENT_SRC = path.resolve(PROJECT_ROOT, '../Content');
+
+['Roms', 'Emulators', 'media', 'Saves'].forEach(sub => {
     const p = path.join(CONTENT_DEST, sub);
     if (!fs.existsSync(p)) {
         fs.mkdirSync(p);
         console.log(`✅ Created empty dir: Content/${sub}`);
+    }
+});
+
+// Copy Essential Media (Themes, Logos)
+console.log('📂 Copying Essential Media assets...');
+const essentialMedia = [
+    'media/images/themes',
+    'media/manufacturers'
+];
+
+essentialMedia.forEach(subPath => {
+    const src = path.join(CONTENT_SRC, subPath);
+    const dest = path.join(CONTENT_DEST, subPath);
+    if (fs.existsSync(src)) {
+        copyDir(src, dest);
     }
 });
 

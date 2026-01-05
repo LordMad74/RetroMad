@@ -55,6 +55,11 @@ export const useGamepad = (
     }, [handlers]);
 
     const scanGamepad = useCallback(() => {
+        if (!document.hasFocus()) {
+            requestRef.current = requestAnimationFrame(scanGamepad);
+            return;
+        }
+
         const gamepads = navigator.getGamepads();
         if (!gamepads || !gamepads[0]) {
             requestRef.current = requestAnimationFrame(scanGamepad);

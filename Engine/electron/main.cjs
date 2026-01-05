@@ -212,9 +212,21 @@ ipcMain.handle('delete-manufacturer', (event, id) => {
     return manufacturerManager.delete(id);
 });
 
-// Backup Handler
+// Backup Handlers
 ipcMain.handle('backup-saves', async () => {
     return await saveManager.backupSaves();
+});
+
+ipcMain.handle('list-backups', async () => {
+    return await saveManager.listBackups();
+});
+
+ipcMain.handle('delete-backup', async (event, name) => {
+    return await saveManager.deleteBackup(name);
+});
+
+ipcMain.handle('restore-backup', async (event, name) => {
+    return await saveManager.restoreBackup(name);
 });
 
 // Start web server (after all definitions)
@@ -283,10 +295,186 @@ ipcMain.on('clean-roms', async (event, { systemId, execute }) => {
 
     event.sender.send('clean-log', `🚀 Démarrage du nettoyage : ${targetPath}`);
     await romCleaner.processDirectory(targetPath, execute, event.sender);
+    event.sender.send('clean-log', `✅ Nettoyage terminé.`);
+    event.sender.send('clean-roms-reply', { success: true });
 });
 
+/**
+ * Vérifie si une nouvelle version est disponible sur le dépôt GitHub.
+ * Utilise l'API GitHub publique pour comparer le tag local avec le dernier tag distant.
+ */
+ipcMain.handle('check-updates', async () => {
+    const currentVersion = 'v0.6.5';
+    const https = require('https');
+
+    return new Promise((resolve) => {
+        const options = {
+            hostname: 'api.github.com',
+            path: '/repos/LordMad74/RetroMad/releases/latest',
+            headers: { 'User-Agent': 'RetroMad-App' }
+        };
+
+        https.get(options, (res) => {
+            let data = '';
+            res.on('data', (chunk) => data += chunk);
+            res.on('end', () => {
+                try {
+                    const release = JSON.parse(data);
+                    const latestVersion = release.tag_name;
+                    resolve({
+                        current: currentVersion,
+                        latest: latestVersion,
+                        url: release.html_url,
+                        updateAvailable: latestVersion !== currentVersion,
+                        notes: release.body
+                    });
+                } catch (e) {
+                    resolve({ current: currentVersion, error: 'Failed to parse update data' });
+                }
+            });
+        }).on('error', (err) => {
+            resolve({ current: currentVersion, error: err.message });
+        });
+    });
+});
+
+// --- REMOTE CONTROL LISTENER ---
+app.on('remote-command', async ({ action, payload }) => {
+    switch (action) {
+        case 'launch':
+            if (payload.system && payload.game) {
+                // Signal frontend to stop BGM if playing
+                const win = BrowserWindow.getAllWindows()[0];
+                if (win) win.webContents.send('remote-action', { type: 'launch-start' });
+
+                const games = await databaseManager.getGames(payload.system);
+                const game = games.find(g => g.id === payload.game);
+                if (game) {
+                    emulatorManager.launchGame(payload.system, game);
+                }
+            }
+            break;
+
+        case 'volume':
+            // Logic to change OS volume or send command to frontend
+            const win = BrowserWindow.getAllWindows()[0];
+            if (win) win.webContents.send('remote-action', { type: 'volume', value: payload.value });
+            break;
+
+        case 'nav':
+            // Forward navigation to frontend (Up, Down, Left, Right, Select, Back)
+            const activeWin = BrowserWindow.getAllWindows()[0];
+            if (activeWin) activeWin.webContents.send('remote-action', { type: 'nav', key: payload.key });
+            break;
+
+        case 'quit-game':
+            // Close the running emulator
+            emulatorManager.stopCurrentGame(); // Assuming this exists or we add it
+            break;
+
+        case 'restart-app':
+            app.relaunch();
+            app.exit();
+            break;
+
+        case 'gamepad-down':
+        case 'gamepad-up':
+            handleGamepadKey(action, payload.key);
+            break;
+    }
+});
+
+// --- HIGH-PERFORMANCE INPUT BRIDGE ---
+let psBridge = null;
+let lastFocusTime = 0;
+
+function ensurePsBridge() {
+    if (psBridge && !psBridge.killed) return;
+
+    // Bypass ExecutionPolicy to avoid permission issues
+    psBridge = spawn('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', '-'], {
+        stdio: ['pipe', 'pipe', 'pipe'],
+        windowsHide: true
+    });
+
+    // Advanced C# bridge for ScanCodes (Critical for DirectX/RetroArch) & Focus Control
+    const setup = `
+        $AddType = @"
+        using System;
+        using System.Runtime.InteropServices;
+        public class Win32 {
+            [DllImport("user32.dll")]
+            public static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, uint dwExtraInfo);
+            [DllImport("user32.dll")]
+            public static extern uint MapVirtualKey(uint uCode, uint uMapType);
+            [DllImport("user32.dll")]
+            public static extern bool SetForegroundWindow(IntPtr hWnd);
+            [DllImport("user32.dll")]
+            public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+            [DllImport("user32.dll")]
+            public static extern IntPtr GetForegroundWindow();
+        }
+"@
+        Add-Type -TypeDefinition $AddType
+        
+        function Send-Key {
+            param($vk, $up)
+            $scan = [Win32]::MapVirtualKey($vk, 0)
+            $flags = if ($up) { 2 } else { 0 }
+            [Win32]::keybd_event($vk, $scan, $flags, 0)
+        }
+
+        function Ensure-Focus {
+            param($procName)
+            $p = Get-Process -Name $procName -ErrorAction SilentlyContinue | Select-Object -First 1
+            if ($p) {
+                [Win32]::ShowWindow($p.MainWindowHandle, 9) # Restore if minimized
+                [Win32]::SetForegroundWindow($p.MainWindowHandle) | Out-Null
+            }
+        }
+    \n`;
+
+    psBridge.stdin.write(setup);
+
+    psBridge.on('error', (err) => {
+        console.error('Input Bridge Error:', err);
+        psBridge = null;
+    });
+
+    psBridge.on('exit', () => { psBridge = null; });
+}
+
+/**
+ * Simule l'appui ou le relâchement d'une touche sur Windows via API Win32 Native.
+ * Utilise MapVirtualKey pour générer les ScanCodes (Requis pour RetroArch).
+ */
+function handleGamepadKey(action, key) {
+    ensurePsBridge();
+    const isUp = action === 'gamepad-up';
+
+    const vkMap = {
+        'Up': 38, 'Down': 40, 'Left': 37, 'Right': 39,
+        'A': 88, 'B': 90, 'X': 83, 'Y': 65,
+        'Start': 13, 'Select': 161,
+        'L1': 81, 'R1': 87, 'L2': 49, 'R2': 50
+    };
+
+    const vk = vkMap[key];
+    if (!vk) return;
+
+    // Aggressive Focus Check (Every 2s)
+    const now = Date.now();
+    if (now - lastFocusTime > 2000) {
+        psBridge.stdin.write(`Ensure-Focus 'retroarch'\n`);
+        lastFocusTime = now;
+    }
+
+    psBridge.stdin.write(`Send-Key ${vk} ${isUp ? '$true' : '$false'}\n`);
+}
+
 app.whenReady().then(() => {
-    initializeDirectories(); // Create content folders
+    initializeDirectories();
+    ensurePsBridge(); // Pre-warm the input bridge!
     createWindow();
 
     app.on('activate', () => {

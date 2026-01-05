@@ -3,117 +3,601 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RetroMad Mobile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RetroMad Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700&family=Orbitron:wght@700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
-            --bg: #0a0a0f;
+            --bg: #050508;
             --accent: #ff2d55;
-            --glass: rgba(255, 255, 255, 0.05);
+            --accent-glow: rgba(255, 45, 85, 0.4);
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text: #ffffff;
+            --text-dim: #888;
         }
 
         body {
             background: var(--bg);
-            color: white;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
+        /* HEADER */
         header {
+            padding: 15px;
             text-align: center;
-            margin-bottom: 30px;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.05), transparent);
+            border-bottom: 1px solid var(--glass-border);
         }
 
         h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            margin: 0;
+            letter-spacing: 4px;
             color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--accent-glow);
         }
 
+        /* TABS */
+        .tabs {
+            display: flex;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 4px;
+            margin: 10px;
+            border-radius: 30px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 8px;
+            text-align: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        .tab.active {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        /* CONTENT */
+        #content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 15px 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* WEBPLAY VIEW */
+        #webplay-view {
+            background: #000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        #webplay-view.active {
+            display: flex;
+        }
+
+        .webplay-container {
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 4 / 3;
+            background: #111;
+            border: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            box-shadow: 0 0 30px var(--accent-glow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .webplay-status {
+            font-family: 'Orbitron';
+            font-size: 0.8rem;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        /* REMOTE VIEW (NAVIGATION) */
+        .remote-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .dpad {
+            display: grid;
+            grid-template-columns: 70px 70px 70px;
+            grid-template-rows: 70px 70px 70px;
+            gap: 10px;
+        }
+
+        .control-btn {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.1s;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .control-btn:active {
+            background: var(--accent);
+            transform: scale(0.9);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .btn-center {
+            grid-column: 2;
+            grid-row: 2;
+            background: var(--accent);
+            border-radius: 50%;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: black;
+        }
+
+        /* GAMEPAD VIEW (TRUE CONTROLLER) */
+        .gamepad-container {
+            position: relative;
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto 1fr auto;
+            gap: 20px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .gp-row {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            grid-column: 1 / span 2;
+        }
+
+        .gp-side {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .gp-btn {
+            width: 60px;
+            height: 60px;
+            background: #222;
+            border: 2px solid #333;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 0 #111;
+            transition: all 0.1s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .gp-btn:active {
+            background: var(--accent);
+            transform: scale(0.95) translateY(2px);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+
+        .gp-dpad {
+            display: grid;
+            grid-template-columns: 50px 50px 50px;
+            grid-template-rows: 50px 50px 50px;
+        }
+
+        .gp-dpad-btn {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #555;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+
+        .gp-dpad-btn:active {
+            background: #333;
+            color: white;
+        }
+
+        .gp-abxy {
+            position: relative;
+            width: 150px;
+            height: 150px;
+        }
+
+        .abxy-btn {
+            position: absolute;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 1rem;
+            border: none;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-a {
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4ade80;
+            color: #064e3b;
+        }
+
+        .btn-b {
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #f87171;
+            color: #7f1d1d;
+        }
+
+        .btn-x {
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #60a5fa;
+            color: #1e3a8a;
+        }
+
+        .btn-y {
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fbbf24;
+            color: #78350f;
+        }
+
+        .gp-system {
+            grid-column: 1 / span 2;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .sys-btn {
+            padding: 5px 15px;
+            background: #333;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            color: #888;
+            border: 1px solid #444;
+        }
+
+        /* MODAL */
+        #selection-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .modal-card {
+            background: #111;
+            border: 1px solid var(--glass-border);
+            padding: 30px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .play-option {
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .play-option:active {
+            background: var(--accent);
+            border-color: white;
+        }
+
+        .play-option b {
+            font-size: 1.2rem;
+        }
+
+        /* LISTS */
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 10px;
         }
 
         .card {
             background: var(--glass);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
             border-radius: 12px;
-            padding: 20px;
+            padding: 10px;
             text-align: center;
-            cursor: pointer;
         }
 
-        .card:active {
-            transform: scale(0.95);
+        .card img {
+            width: 100%;
+            height: 70px;
+            object-fit: contain;
+            margin-bottom: 8px;
         }
 
-        .game-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
-        }
-
-        .game-item {
+        .list-item {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
             background: var(--glass);
-            padding: 10px;
+            margin-bottom: 8px;
+            padding: 8px;
             border-radius: 8px;
         }
 
-        .game-item img {
-            width: 50px;
-            height: 70px;
-            object-fit: cover;
+        .list-item img {
+            width: 35px;
+            height: 50px;
             border-radius: 4px;
+            object-fit: cover;
         }
 
-        .back-btn {
-            background: none;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            padding: 5px 15px;
-            border-radius: 20px;
-            margin-bottom: 20px;
+        .list-item .info {
+            flex: 1;
+            font-size: 0.85rem;
+        }
+
+        footer {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        footer input {
+            flex: 1;
+            accent-color: var(--accent);
         }
     </style>
 </head>
 
 <body>
-    <header>
-        <h1>RetroMad</h1>
-        <p>Mobile Portal</p>
+    <header onclick="showSystems()">
+        <h1>RETROMAD PORTAL</h1>
     </header>
 
-    <div id="app">
-        <div id="main-view">
-            <h3>Systèmes</h3>
-            <div class="grid" id="system-list">
-                <!-- Loaded via JS -->
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('library')">Library</div>
+        <div class="tab" onclick="switchTab('remote')">Remote</div>
+        <div class="tab" id="tab-gamepad" onclick="switchTab('gamepad')">Gamepad</div>
+    </div>
+
+    <div id="content">
+        <!-- LIBRARY VIEW -->
+        <div id="library-view" class="view active">
+            <div id="systems-container">
+                <div class="grid" id="system-list"></div>
+            </div>
+            <div id="games-container" style="display:none">
+                <div style="color:var(--accent); margin-bottom:10px; font-weight:bold" onclick="showSystems()">← BACK TO
+                    CONSOLES</div>
+                <div id="game-list"></div>
             </div>
         </div>
 
-        <div id="game-view" style="display:none">
-            <button class="back-btn" onclick="showSystems()">← Retour</button>
-            <h3 id="current-system-name">Jeux</h3>
-            <div class="game-grid" id="game-list">
-                <!-- Loaded via JS -->
+        <!-- REMOTE VIEW (NAVIGATION) -->
+        <div id="remote-view" class="view">
+            <div id="now-playing"
+                style="background:rgba(255,45,85,0.1); padding:10px; border-radius:8px; margin-bottom:15px; display:none; border:1px solid var(--accent-glow)">
+                <div style="font-size:0.6rem; color:var(--accent); font-weight:bold;">NOW PLAYING</div>
+                <div id="playing-title" style="font-size:0.9rem; font-weight:bold;">...</div>
             </div>
+            <div class="remote-container">
+                <div class="dpad">
+                    <div style="grid-column:1; grid-row:1" class="control-btn" onclick="sendCmd('vol-down')">🔉</div>
+                    <div style="grid-column:2; grid-row:1" class="control-btn" onclick="sendCmd('nav', 'Up')">▲</div>
+                    <div style="grid-column:3; grid-row:1" class="control-btn" onclick="sendCmd('vol-up')">🔊</div>
+
+                    <div style="grid-column:1; grid-row:2" class="control-btn" onclick="sendCmd('nav', 'Left')">◀</div>
+                    <div style="grid-column:2; grid-row:2" class="control-btn btn-center"
+                        onclick="sendCmd('nav', 'Select')">OK</div>
+                    <div style="grid-column:3; grid-row:2" class="control-btn" onclick="sendCmd('nav', 'Right')">▶</div>
+
+                    <div style="grid-column:1; grid-row:3" class="control-btn" onclick="sendCmd('nav', 'Back')">↩</div>
+                    <div style="grid-column:2; grid-row:3" class="control-btn" onclick="sendCmd('nav', 'Down')">▼</div>
+                    <div style="grid-column:3; grid-row:3" class="control-btn" onclick="sendCmd('quit-game')"
+                        style="color:#ff2d55">✖</div>
+                </div>
+                <div class="control-btn" style="width:100%; padding:15px; font-size:0.8rem; font-weight:bold"
+                    onclick="sendCmd('restart-app')">RESTART STATION</div>
+            </div>
+        </div>
+
+        <!-- GAMEPAD VIEW -->
+        <div id="gamepad-view" class="view">
+            <div class="gamepad-container">
+                <div class="gp-row" style="justify-content:space-around; margin-bottom:20px;">
+                    <button class="sys-btn" ontouchstart="sendKey('L1', 1)" ontouchend="sendKey('L1', 0)">L1</button>
+                    <button class="sys-btn" ontouchstart="sendKey('L2', 1)" ontouchend="sendKey('L2', 0)">L2</button>
+                    <button class="sys-btn" ontouchstart="sendKey('R2', 1)" ontouchend="sendKey('R2', 0)">R2</button>
+                    <button class="sys-btn" ontouchstart="sendKey('R1', 1)" ontouchend="sendKey('R1', 0)">R1</button>
+                </div>
+
+                <div class="gp-side">
+                    <div class="gp-dpad">
+                        <div style="grid-column:2; grid-row:1" class="gp-dpad-btn" ontouchstart="sendKey('Up', 1)"
+                            ontouchend="sendKey('Up', 0)">▲</div>
+                        <div style="grid-column:1; grid-row:2" class="gp-dpad-btn" ontouchstart="sendKey('Left', 1)"
+                            ontouchend="sendKey('Left', 0)">◀</div>
+                        <div style="grid-column:3; grid-row:2" class="gp-dpad-btn" ontouchstart="sendKey('Right', 1)"
+                            ontouchend="sendKey('Right', 0)">▶</div>
+                        <div style="grid-column:2; grid-row:3" class="gp-dpad-btn" ontouchstart="sendKey('Down', 1)"
+                            ontouchend="sendKey('Down', 0)">▼</div>
+                    </div>
+                </div>
+
+                <div class="gp-side">
+                    <div class="gp-abxy">
+                        <button class="abxy-btn btn-y" ontouchstart="sendKey('Y', 1)"
+                            ontouchend="sendKey('Y', 0)">Y</button>
+                        <button class="abxy-btn btn-b" ontouchstart="sendKey('B', 1)"
+                            ontouchend="sendKey('B', 0)">B</button>
+                        <button class="abxy-btn btn-a" ontouchstart="sendKey('A', 1)"
+                            ontouchend="sendKey('A', 0)">A</button>
+                        <button class="abxy-btn btn-x" ontouchstart="sendKey('X', 1)"
+                            ontouchend="sendKey('X', 0)">X</button>
+                    </div>
+                </div>
+
+                <div class="gp-system">
+                    <button class="sys-btn" ontouchstart="sendKey('Select', 1)"
+                        ontouchend="sendKey('Select', 0)">SELECT</button>
+                    <button class="sys-btn" ontouchstart="sendKey('Start', 1)" ontouchend="sendKey('Start', 0)"
+                        style="background:var(--accent); color:black">START</button>
+                </div>
+
+                <div class="gp-row" style="padding:10px; opacity:0.5; font-size:0.6rem; text-align:center;">
+                    GAMEPAD MODE ACTIVE - PC GAMEPLAY
+                </div>
+            </div>
+        </div>
+
+        <!-- WEBPLAY VIEW -->
+        <div id="webplay-view" class="view">
+            <div class="webplay-status">STREAMING EN COURS (ALPHA)</div>
+            <div class="webplay-container" id="webplay-container">
+                <div style="text-align:center">
+                    <div style="font-size: 3rem; margin-bottom: 20px;">🎮</div>
+                    <div id="webplay-loading-text">Initialisation du flux...</div>
+                    <div style="font-size: 0.7rem; color: #555; margin-top: 10px;">Veuillez patienter (Connexion au
+                        serveur RetroMad)</div>
+                </div>
+            </div>
+            <button class="sys-btn" onclick="showSystems()"
+                style="margin-top:20px; border-color:var(--accent); color:white">ARRÊTER LE FLUX</button>
         </div>
     </div>
 
+    <!-- SELECTION MODAL -->
+    <div id="selection-modal">
+        <div class="modal-card">
+            <h3 style="margin:0">Choisir le mode</h3>
+            <div id="modal-game-name" style="color:var(--accent); font-size:0.8rem">...</div>
+
+            <div class="play-option" onclick="confirmLaunch('pc')">
+                <b>🖥️ JOUER SUR PC</b>
+                <span style="font-size:0.7rem; opacity:0.7">Le GSM devient une manette</span>
+            </div>
+
+            <div class="play-option" onclick="confirmLaunch('mobile')">
+                <b>📱 JOUER ICI</b>
+                <span style="font-size:0.7rem; opacity:0.7">Streaming WebPlay (Alpha)</span>
+            </div>
+
+            <button onclick="closeModal()"
+                style="background:transparent; border:none; color:#666; font-size:0.8rem; margin-top:10px">ANNULER</button>
+        </div>
+    </div>
+
+    <footer>
+        <span onclick="sendCmd('volume', 0)">🔇</span>
+        <input type="range" min="0" max="100" value="70" onchange="sendCmd('volume', this.value)">
+        <span onclick="sendCmd('volume', 100)">🔊</span>
+    </footer>
+
     <script>
         let allGames = [];
+        let selectedGameData = null;
 
-        async function loadGames() {
-            const res = await fetch('/api/games');
-            const data = await res.json();
-            allGames = data.games;
-            renderSystems();
+        async function init() {
+            try {
+                const res = await fetch('/api/games');
+                const data = await res.json();
+                allGames = data.games || [];
+                renderSystems();
+            } catch (e) { console.error("Init Error", e); }
         }
 
         function renderSystems() {
@@ -121,37 +605,120 @@
             const list = document.getElementById('system-list');
             list.innerHTML = systems.map(sys => `
                 <div class="card" onclick="showGames('${sys}')">
-                    <div style="font-size: 24px">🎮</div>
-                    <div style="font-weight:bold">${sys}</div>
+                    <img src="/media/manufacturers/${sys}.png" onerror="this.src='/media/manufacturers/default.png'">
+                    <div class="title" style="font-size:0.7rem">${sys.toUpperCase()}</div>
                 </div>
             `).join('');
         }
 
-        function showGames(system) {
-            document.getElementById('main-view').style.display = 'none';
-            document.getElementById('game-view').style.display = 'block';
-            document.getElementById('current-system-name').innerText = system;
-
-            const filtered = allGames.filter(g => g.system === system);
+        function showGames(sys) {
+            document.getElementById('systems-container').style.display = 'none';
+            document.getElementById('games-container').style.display = 'block';
+            const games = allGames.filter(g => g.system === sys);
             const list = document.getElementById('game-list');
-            list.innerHTML = filtered.map(g => `
-                <div class="game-item" onclick="launchGame('${g.system}', '${g.id}')">
-                    <img src="/media/${g.thumbnail || g.image || ''}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%2210%22><rect width=%2210%22 height=%2210%22 fill=%22%23222%22/></svg>'">
-                    <div>${g.name}</div>
+            list.innerHTML = games.map(g => {
+                const imgPath = g.thumbnail || g.image;
+                return `
+                <div class="list-item" onclick="openLaunchModal('${g.id}')">
+                    <img src="/${imgPath}" onerror="this.src='/media/images/placeholder.png'">
+                    <div class="info">
+                        <div style="font-weight:bold">${g.name}</div>
+                        <div style="font-size:0.7rem; color:#888">${g.manufacturer || ''}</div>
+                    </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         function showSystems() {
-            document.getElementById('main-view').style.display = 'block';
-            document.getElementById('game-view').style.display = 'none';
+            document.getElementById('systems-container').style.display = 'block';
+            document.getElementById('games-container').style.display = 'none';
+            switchTab('library');
         }
 
-        function launchGame(system, id) {
-            window.location.href = `/play/${system}/${id}`;
+        function openLaunchModal(gameId) {
+            selectedGameData = allGames.find(g => g.id === gameId);
+            document.getElementById('modal-game-name').innerText = selectedGameData.name;
+            document.getElementById('selection-modal').style.display = 'flex';
         }
 
-        loadGames();
+        function closeModal() {
+            document.getElementById('selection-modal').style.display = 'none';
+        }
+
+        function confirmLaunch(mode) {
+            closeModal();
+            if (mode === 'pc') {
+                enterFullscreen();
+                sendCmd('launch', { system: selectedGameData.system, game: selectedGameData.id });
+                switchTab('gamepad');
+            } else {
+                enterFullscreen();
+                switchTab('webplay');
+                document.getElementById('webplay-loading-text').innerText = "Streaming " + selectedGameData.name + "...";
+            }
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+
+            document.getElementById(`${tabId}-view`).classList.add('active');
+
+            // Find the tab element and activate it
+            document.querySelectorAll('.tab').forEach(t => {
+                if (t.innerText.toLowerCase() === tabId.toLowerCase()) t.classList.add('active');
+            });
+
+            // Enter Fullscreen if Gamepad mode
+            if (tabId === 'gamepad') {
+                enterFullscreen();
+            }
+        }
+
+        function enterFullscreen() {
+            const el = document.documentElement;
+            if (el.requestFullscreen) el.requestFullscreen();
+            else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+            else if (el.msRequestFullscreen) el.msRequestFullscreen();
+
+            // Try to lock orientation to landscape if supported
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(e => console.log("Orientation lock failed", e));
+            }
+        }
+
+        async function sendCmd(action, payload = {}) {
+            if (navigator.vibrate) navigator.vibrate(20);
+
+            if (action === 'launch') {
+                const game = allGames.find(g => g.id === payload.game);
+                if (game) {
+                    document.getElementById('now-playing').style.display = 'block';
+                    document.getElementById('playing-title').innerText = game.name;
+                }
+            }
+
+            try {
+                await fetch('/api/command', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action, payload })
+                });
+            } catch (e) { console.error('Cmd failed', e); }
+        }
+
+        function sendKey(key, state) {
+            if (navigator.vibrate && state === 1) navigator.vibrate(40);
+
+            const action = state === 1 ? 'gamepad-down' : 'gamepad-up';
+            fetch('/api/command', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action, payload: { key } })
+            }).catch(e => { });
+        }
+
+        init();
     </script>
 </body>
 

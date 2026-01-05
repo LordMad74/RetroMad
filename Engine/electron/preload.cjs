@@ -66,6 +66,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
     // Backup
     backupSaves: () => ipcRenderer.invoke('backup-saves'),
+    listBackups: () => ipcRenderer.invoke('list-backups'),
+    deleteBackup: (name) => ipcRenderer.invoke('delete-backup', name),
+    restoreBackup: (name) => ipcRenderer.invoke('restore-backup', name),
 
     // Cleaner (Promisified)
     cleanRoms: (systemId, execute, callback) => {
@@ -103,4 +106,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
             resolve({ started: true });
         });
     },
+
+    // Updates
+    checkUpdates: () => ipcRenderer.invoke('check-updates'),
+
+    // Remote Actions
+    onRemoteAction: (callback) => {
+        const sub = (event, value) => callback(value);
+        ipcRenderer.on('remote-action', sub);
+        return () => ipcRenderer.removeListener('remote-action', sub);
+    }
 });

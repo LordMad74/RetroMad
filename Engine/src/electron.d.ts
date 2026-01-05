@@ -53,10 +53,26 @@ export interface ElectronAPI {
     deleteManufacturer: (id: string) => Promise<any>;
 
     // Backups
-    backupSaves: () => Promise<{ success: boolean; path?: string }>;
+    backupSaves: () => Promise<{ success: boolean; path?: string; message: string; name?: string; error?: string }>;
+    listBackups: () => Promise<Array<{ name: string; size: string; date: string; path: string }>>;
+    deleteBackup: (name: string) => Promise<{ success: boolean }>;
+    restoreBackup: (name: string) => Promise<{ success: boolean; message: string; error?: string }>;
 
     // Tools
     cleanRoms: (systemId: string, execute: boolean, callback: (msg: string) => void) => Promise<any>;
+
+    // Updates
+    checkUpdates: () => Promise<{
+        current: string;
+        latest: string;
+        url: string;
+        updateAvailable: boolean;
+        notes?: string;
+        error?: string;
+    }>;
+
+    // Remote Actions
+    onRemoteAction: (callback: (data: { type: string, value?: any, key?: string }) => void) => () => void;
 }
 
 declare global {

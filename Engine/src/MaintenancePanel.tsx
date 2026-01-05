@@ -1,12 +1,11 @@
-import { useState, useEffect } from 'react';
-import { Eraser, Trash2, ShieldAlert, CheckCircle, Terminal } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Eraser, Trash2, ShieldAlert, Terminal } from 'lucide-react';
 
 export default function MaintenancePanel() {
     const [systems, setSystems] = useState<any[]>([]);
     const [selectedSystemId, setSelectedSystemId] = useState<string>('all');
     const [isProcessing, setIsProcessing] = useState(false);
     const [logs, setLogs] = useState<string[]>([]);
-    const [mode, setMode] = useState<'dry' | 'force'>('dry');
 
     useEffect(() => {
         loadSystems();
@@ -17,16 +16,45 @@ export default function MaintenancePanel() {
         setSystems(sys || []);
     };
 
+    const logBuffer = useRef<string[]>([]);
+    const flushHandle = useRef<NodeJS.Timeout | null>(null);
+
+    // Initialisation et nettoyage du buffer
+    useEffect(() => {
+        return () => {
+            if (flushHandle.current) clearTimeout(flushHandle.current);
+        };
+    }, []);
+
+    const flushLogs = () => {
+        if (logBuffer.current.length > 0) {
+            const newLogs = [...logBuffer.current];
+            logBuffer.current = []; // Reset buffer
+            setLogs(prev => [...prev, ...newLogs]);
+        }
+        flushHandle.current = null;
+    };
+
     const runCleaner = async (execute: boolean) => {
         setIsProcessing(true);
         setLogs(['Démarrage de l\'analyse...', execute ? '⚠️ MODE ÉCRITURE (Modifications activées)' : 'ℹ️ MODE SIMULATION (Aucun changement)', '---']);
-        setMode(execute ? 'force' : 'dry');
+
+        // Reset buffer
+        logBuffer.current = [];
 
         try {
-            // @ts-ignore
             await window.electronAPI.cleanRoms(selectedSystemId, execute, (logLine: string) => {
-                setLogs(prev => [...prev, logLine]);
+                logBuffer.current.push(logLine);
+
+                // Si pas de flush en attente, on en planifie un
+                if (!flushHandle.current) {
+                    flushHandle.current = setTimeout(flushLogs, 100);
+                }
             });
+
+            // Force flush restant à la fin
+            if (flushHandle.current) clearTimeout(flushHandle.current);
+            flushLogs();
 
             if (execute) {
                 setLogs(prev => [...prev, '---', '✅ Nettoyage des fichiers terminé.', '🔄 Mise à jour de la base de données...']);

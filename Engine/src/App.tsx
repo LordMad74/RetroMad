@@ -7,6 +7,7 @@ import ManufacturersView from './ManufacturersView';
 import { motion } from 'framer-motion';
 import { useAudio } from './hooks/useAudio';
 import { useGamepad } from './hooks/useGamepad';
+import { Volume2, VolumeX } from 'lucide-react';
 
 // Initial fallback systems, will be replaced by config
 const DEFAULT_SYSTEMS = [
@@ -23,9 +24,39 @@ function App() {
     const [selectedManufacturer, setSelectedManufacturer] = useState<string | null>(null);
     const [systems, setSystems] = useState<any[]>(DEFAULT_SYSTEMS);
     const [kioskConfig, setKioskConfig] = useState<{ enabled: boolean, theme: string } | null>(null);
+    const [bgmMuted, setBgmMuted] = useState(false);
+
+    // Apply custom theme on startup
+    useEffect(() => {
+        const saved = localStorage.getItem('custom_theme');
+        if (saved) {
+            try {
+                const config = JSON.parse(saved);
+                Object.keys(config).forEach(key => {
+                    document.documentElement.style.setProperty(key, config[key]);
+                });
+            } catch (e) { }
+        }
+    }, []);
 
     // Audio Hook
-    const { playSound } = useAudio();
+    const { playSound, startBGM, stopBGM } = useAudio();
+
+    // Interaction to start audio (autostart policy)
+    const handleFirstInteraction = () => {
+        if (!bgmMuted) startBGM();
+        window.removeEventListener('click', handleFirstInteraction);
+        window.removeEventListener('keydown', handleFirstInteraction);
+    };
+
+    useEffect(() => {
+        window.addEventListener('click', handleFirstInteraction);
+        window.addEventListener('keydown', handleFirstInteraction);
+        return () => {
+            window.removeEventListener('click', handleFirstInteraction);
+            window.removeEventListener('keydown', handleFirstInteraction);
+        };
+    }, []);
 
     // Load systems and config on mount
     useEffect(() => {
@@ -51,6 +82,45 @@ function App() {
         };
         loadData();
     }, [activeTab]);
+
+    // Handle Remote Action Event
+    useEffect(() => {
+        if (!window.electronAPI.onRemoteAction) return;
+
+        const cleanup = window.electronAPI.onRemoteAction((data: any) => {
+            console.log("Remote action received in App:", data);
+
+            if (data.type === 'nav') {
+                const key = data.key;
+                if (key === 'Select') {
+                    const active = document.activeElement as HTMLElement;
+                    if (active) active.click();
+                    else window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+                } else if (key === 'Back') {
+                    handleBack();
+                } else {
+                    window.dispatchEvent(new KeyboardEvent('keydown', { key: `Arrow${key}` }));
+                    playSound('hover');
+                }
+            } else if (data.type === 'volume') {
+                console.log("Setting volume to:", data.value);
+                playSound('success');
+            } else if (data.type === 'launch-start') {
+                stopBGM();
+                setBgmMuted(true);
+            }
+        });
+
+        return cleanup;
+    }, [selectedSystem, selectedManufacturer, activeTab, bgmMuted]);
+
+    // Stop BGM when entering a system library (optional but immersive)
+    useEffect(() => {
+        if (selectedSystem) {
+            stopBGM();
+            setBgmMuted(true);
+        }
+    }, [selectedSystem]);
 
     // Handle Web Play Event
     useEffect(() => {
@@ -160,11 +230,47 @@ function App() {
                     </h1>
                 </div>
 
-                <nav style={{ display: 'flex', gap: '10px' }}>
+                <nav style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                     {navButton('manufacturers', 'Constructeurs', () => { setActiveTab('manufacturers'); setSelectedManufacturer(null); })}
                     {navButton('home', 'Consoles', () => { setActiveTab('home'); setSelectedSystem(null); setSelectedManufacturer(null); })}
                     {navButton('webplay', 'WebPlay', () => setActiveTab('webplay'))}
                     {navButton('admin', 'Admin', () => setActiveTab('admin'))}
+
+                    <select
+                        onChange={(e) => {
+                            const track = e.target.value as any;
+                            if (!bgmMuted) startBGM(track);
+                            playSound('click');
+                        }}
+                        style={{
+                            background: 'rgba(255,255,255,0.05)',
+                            border: '1px solid var(--glass-border)',
+                            color: 'var(--text-secondary)',
+                            borderRadius: '4px',
+                            fontSize: '11px',
+                            padding: '2px 5px',
+                            outline: 'none',
+                            cursor: 'pointer',
+                            marginLeft: '10px'
+                        }}
+                    >
+                        <option value="synthwave">Synthwave</option>
+                        <option value="chiptune">Chiptune</option>
+                        <option value="ambient">Ambient</option>
+                    </select>
+
+                    <button
+                        onClick={() => {
+                            if (bgmMuted) startBGM();
+                            else stopBGM();
+                            setBgmMuted(!bgmMuted);
+                            playSound('click');
+                        }}
+                        style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '5px', marginLeft: '5px', display: 'flex', alignItems: 'center' }}
+                        title={bgmMuted ? "Activer la musique" : "Couper la musique"}
+                    >
+                        {bgmMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+                    </button>
                 </nav>
             </header>
 

@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Activity, Gamepad2, HardDrive, Cpu, Database, Save, Server, Clock } from 'lucide-react';
+import { Activity, Gamepad2, Cpu, Database, Server, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function Dashboard() {
+    const [webServerInfo, setWebServerInfo] = useState<any>(null);
     const [stats, setStats] = useState({
         systems: 0,
         games: 0,
@@ -47,6 +48,7 @@ export default function Dashboard() {
                 retroArchInstalled: raStatus.retroarch,
                 webServerActive: web.running
             });
+            setWebServerInfo(web);
         } catch (e) {
             console.error("Dashboard stats error", e);
         }
@@ -153,25 +155,35 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                {/* QUICK ACTIONS */}
-                <div style={{ background: 'var(--bg-secondary)', padding: '25px', borderRadius: '16px', border: '1px solid var(--glass-border)' }}>
-                    <h3 style={{ marginTop: 0, marginBottom: '20px', fontSize: '1.1em' }}>Maintenance Rapide</h3>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                        <button
-                            onClick={() => window.electronAPI.backupSaves()}
-                            style={{ padding: '15px', background: 'rgba(52, 152, 219,0.2)', color: '#3498db', border: '1px solid rgba(52, 152, 219,0.3)', borderRadius: '8px', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px' }}
-                        >
-                            <Save size={20} />
-                            Sauvegarder Saves
-                        </button>
-                        <button
-                            onClick={() => alert("Fonction de nettoyage cache à venir...")}
-                            style={{ padding: '15px', background: 'rgba(231, 76, 60,0.2)', color: '#e74c3c', border: '1px solid rgba(231, 76, 60,0.3)', borderRadius: '8px', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px' }}
-                        >
-                            <HardDrive size={20} />
-                            Vider Cache
-                        </button>
+                {/* REMOTE CONTROL SECTION */}
+                <div style={{ background: 'var(--bg-secondary)', padding: '25px', borderRadius: '16px', border: '1px solid var(--glass-border)', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    <div>
+                        <h3 style={{ marginTop: 0, marginBottom: '5px', fontSize: '1.1em' }}>Contrôle à Distance</h3>
+                        <p style={{ fontSize: '0.8em', color: '#888', margin: 0 }}>Scannez pour contrôler RetroMad depuis votre mobile.</p>
                     </div>
+
+                    {stats.webServerActive ? (
+                        <div style={{ display: 'flex', gap: '20px', alignItems: 'center', background: 'rgba(0,0,0,0.2)', padding: '15px', borderRadius: '12px' }}>
+                            <div style={{ background: 'white', padding: '10px', borderRadius: '8px', display: 'flex' }}>
+                                <img
+                                    src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(webServerInfo?.fallbackUrl || '')}`}
+                                    alt="QR Code"
+                                    style={{ width: '100px', height: '100px' }}
+                                />
+                            </div>
+                            <div style={{ flex: 1 }}>
+                                <div style={{ fontSize: '0.9em', fontWeight: 'bold', color: 'var(--accent-color)', marginBottom: '5px' }}>MOBILE PORTAL</div>
+                                <code style={{ fontSize: '0.8em', color: '#666', wordBreak: 'break-all' }}>{webServerInfo?.fallbackUrl}</code>
+                                <div style={{ marginTop: '10px', fontSize: '0.75em', color: '#aaa', lineHeight: '1.4' }}>
+                                    Assurez-vous que votre téléphone est sur le même réseau Wi-Fi.
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div style={{ textAlign: 'center', padding: '20px', color: '#444' }}>
+                            Le serveur web doit être activé dans les préférences.
+                        </div>
+                    )}
                 </div>
             </div>
 
