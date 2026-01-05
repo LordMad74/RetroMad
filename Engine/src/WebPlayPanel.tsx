@@ -77,8 +77,9 @@ export default function WebPlayPanel() {
                             Connexion Rapide
                         </h4>
                         <ol style={{ margin: 0, paddingLeft: '20px', color: 'rgba(255,255,255,0.8)', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.9em' }}>
-                            <li>Scannez le QR Code (méthode fiable).</li>
-                            <li>Ou tapez l'adresse IP sur votre gsm :</li>
+                            <li>Scannez le QR Code ou tapez l'adresse IP.</li>
+                            <li>Selectionnez un jeu sur votre mobile/TV.</li>
+                            <li><strong>NOUVEAU :</strong> Connectez une manette Bluetooth à votre appareil pour une expérience parfaite !</li>
                         </ol>
 
                         <div style={{
@@ -95,14 +96,13 @@ export default function WebPlayPanel() {
                                     fontWeight: 'bold', fontSize: '0.75em'
                                 }}
                             >
-                                TESTER SUR CE PC
+                                TESTER LE PORTAIL
                             </button>
                         </div>
 
                         <div style={{ marginTop: '15px', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                             <p style={{ margin: 0, fontSize: '0.8em', color: 'rgba(255,255,255,0.4)', textAlign: 'center' }}>
-                                Nom du serveur :<br />
-                                <span style={{ color: 'rgba(255,255,255,0.6)' }}>http://{status.hostname}:{status.port}</span>
+                                Accès universel (PC, Mac, iOS, Android, Smart TV)
                             </p>
                         </div>
                     </div>
@@ -134,7 +134,7 @@ export default function WebPlayPanel() {
             }}>
                 <Globe size={20} />
                 <p style={{ margin: 0, fontSize: '0.8em', opacity: 0.8 }}>
-                    <strong>Note :</strong> Émulation via WebAssembly. Les performances dépendent de votre gsm ou tablette.
+                    <strong>Note :</strong> Streaming Haute Performance (MJPEG). Compatible avec la majorité des navigateurs modernes sans installation.
                 </p>
             </div>
         </div>

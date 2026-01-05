@@ -420,7 +420,14 @@ function ensurePsBridge() {
         function Send-Key {
             param($vk, $up)
             $scan = [Win32]::MapVirtualKey($vk, 0)
-            $flags = if ($up) { 2 } else { 0 }
+            
+            # Extended keys (Arrows, etc) need the 0x1 flag
+            $extended = ($vk -in 37,38,39,40,33,34,35,36,45,46)
+            
+            $flags = 0
+            if ($extended) { $flags += 1 }
+            if ($up) { $flags += 2 }
+            
             [Win32]::keybd_event($vk, $scan, $flags, 0)
         }
 
@@ -454,17 +461,17 @@ function handleGamepadKey(action, key) {
 
     const vkMap = {
         'Up': 38, 'Down': 40, 'Left': 37, 'Right': 39,
-        'A': 88, 'B': 90, 'X': 83, 'Y': 65,
-        'Start': 13, 'Select': 161,
-        'L1': 81, 'R1': 87, 'L2': 49, 'R2': 50
+        'A': 88, 'B': 90, 'X': 83, 'Y': 65,    // x, z, s, a
+        'Start': 13, 'Select': 161,             // Enter, RShift
+        'L1': 81, 'R1': 87, 'L2': 49, 'R2': 50  // q, w, 1, 2
     };
 
     const vk = vkMap[key];
     if (!vk) return;
 
-    // Aggressive Focus Check (Every 2s)
+    // Aggressive Focus Check (Every 5s to avoid spam)
     const now = Date.now();
-    if (now - lastFocusTime > 2000) {
+    if (now - lastFocusTime > 5000) {
         psBridge.stdin.write(`Ensure-Focus 'retroarch'\n`);
         lastFocusTime = now;
     }
