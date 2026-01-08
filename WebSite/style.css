@@ -238,33 +238,52 @@ p {
 /* Screenshot Showcase */
 .screenshot-showcase {
     perspective: 1000px;
+    position: relative;
 }
 
 .hero-screenshot {
     width: 550px;
     max-width: 100%;
-    border-radius: 12px;
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 255, 157, 0.1);
+    height: 400px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 16px;
+    border: 3px solid var(--secondary);
+    box-shadow:
+        0 0 30px rgba(189, 0, 255, 0.5),
+        0 30px 80px rgba(0, 0, 0, 0.6),
+        inset 0 0 60px rgba(0, 0, 0, 0.3);
     transform: rotateY(-8deg) rotateX(5deg);
     transition: transform 0.5s ease;
+    position: relative;
+    mask-image: radial-gradient(ellipse 90% 85% at center, black 60%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 90% 85% at center, black 60%, transparent 100%);
 }
 
 .hero-screenshot:hover {
     transform: rotateY(-2deg) rotateX(2deg) scale(1.02);
+    box-shadow:
+        0 0 50px rgba(189, 0, 255, 0.7),
+        0 30px 80px rgba(0, 0, 0, 0.6);
 }
 
 .screenshot-frame {
     perspective: 1000px;
+    position: relative;
 }
 
 .feature-screenshot {
     width: 100%;
     max-width: 500px;
+    height: 350px;
+    object-fit: cover;
+    object-position: center;
     border-radius: 12px;
     border: 2px solid rgba(255, 255, 255, 0.15);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     transition: transform 0.3s ease;
+    mask-image: radial-gradient(ellipse 92% 88% at center, black 65%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 92% 88% at center, black 65%, transparent 100%);
 }
 
 .feature-screenshot:hover {
