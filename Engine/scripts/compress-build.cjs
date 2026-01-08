@@ -3,7 +3,7 @@ const { execSync } = require('child_process');
 const sevenBin = require('7zip-bin');
 
 const BUILD_DIR = path.resolve(__dirname, '../dist-win/retromad-portal-win32-x64');
-const OUTPUT_FILE = path.resolve(__dirname, '../../RetroMad_Build_V0.7.0.7z');
+const OUTPUT_FILE = path.resolve(__dirname, '../../RetroMad_Build_V0.7.5.7z');
 
 console.log(`📦 Compressing Build...`);
 console.log(`Src: ${BUILD_DIR}`);

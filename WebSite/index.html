@@ -31,8 +31,8 @@
         <!-- HERO -->
         <section class="hero">
             <div class="hero-content">
-                <div class="badge-hero">🚀 MOTEUR WASM • MODE KIOSK • SCRAPING AUTO</div>
-                <h1>La Station<br><span class="gradient-text">Ultime.</span></h1>
+                <span class="version-tag">Version 0.7.5</span>
+                <h1>L'Émotion Rétro, <span class="text-gradient">Redéfinie</span></h1>
                 <p>RetroMad n'est pas qu'un frontend. C'est un écosystème complet : émulation locale WASM, streaming
                     mobile, gestion avancée, thèmes dynamiques et mode borne d'arcade professionnel.</p>
                 <div class="cta-group">
@@ -152,6 +152,20 @@
                         <li><i class="fas fa-history"></i> Historique des sauvegardes</li>
                         <li><i class="fas fa-undo"></i> Restauration en 1 clic</li>
                         <li><i class="fas fa-trash"></i> Gestion de l'espace disque</li>
+                    </ul>
+                </div>
+
+                <!-- NEW: Kiosk Video & AI -->
+                <div class="mega-card" style="border: 1px solid var(--accent);">
+                    <div class="mega-icon"><i class="fas fa-video"></i></div>
+                    <h3>Cinématique & IA</h3>
+                    <p>L'immersion nouvelle génération</p>
+                    <ul class="feature-bullets">
+                        <li><i class="fas fa-expand"></i> Vidéo Kiosk avec zoom dynamique</li>
+                        <li><i class="fas fa-magic"></i> Descriptions de jeux par IA</li>
+                        <li><i class="fas fa-globe"></i> Support Multilingue (FR/EN)</li>
+                        <li><i class="fas fa-user-robot"></i> Moteur de synthèse épique</li>
+                        <li><i class="fas fa-film"></i> Mode "Démonstration" automatique</li>
                     </ul>
                 </div>
 
@@ -295,20 +309,21 @@
         <section id="download" class="download-section">
             <div class="glass-panel active-glow">
                 <h2>Télécharger RetroMad</h2>
-                <div class="version-badge">v0.7.0 - WebPlay & Kiosk Edition</div>
+                <div class="version-badge">v0.7.5 - Multilingue & IA Edition</div>
                 <p>Version portable Windows 10/11 (x64). Aucune installation requise.</p>
 
                 <div class="download-buttons">
-                    <a href="https://github.com/LordMad74/RetroMad/releases/latest" class="btn btn-primary btn-large">
-                        <i class="fab fa-windows"></i> Télécharger RetroMad
-                        <span class="sub-text">Portable .7z • ~85 Mo</span>
+                    <a href="https://github.com/LordMad74/RetroMad/releases/download/v0.7.5/RetroMad_Build_V0.7.5.7z"
+                        class="btn btn-primary btn-large">
+                        <i class="fab fa-windows"></i> Télécharger RetroMad Directement
+                        <span class="sub-text">Build Officiel .7z • ~90 Mo</span>
                     </a>
                 </div>
 
                 <div class="install-steps">
                     <h4>Installation en 3 étapes :</h4>
                     <ol>
-                        <li>Téléchargez et décompressez <code>RetroMad_V0.7.0.7z</code></li>
+                        <li>Téléchargez et décompressez <code>RetroMad_Build_V0.7.5.7z</code></li>
                         <li>Lancez <code>Lancer_RetroMad.ps1</code> (PowerShell)</li>
                         <li>Profitez ! 🎮</li>
                     </ol>
@@ -347,6 +362,50 @@
     </footer>
 
     <script src="script.js"></script>
+
+    <!-- LIGHTBOX HTML -->
+    <div id="lightbox" class="lightbox-overlay">
+        <span class="lightbox-close">&times;</span>
+        <img class="lightbox-img" src="" alt="View large">
+    </div>
+
+    <!-- LIGHTBOX SCRIPT -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = lightbox.querySelector('.lightbox-img');
+            const closeBtn = lightbox.querySelector('.lightbox-close');
+
+            // Attach click event to all images on the page
+            document.querySelectorAll('img').forEach(img => {
+                // Ignore small icons or non-screenshot images if needed
+                if (img.classList.contains('no-lightbox')) return;
+
+                img.addEventListener('click', () => {
+                    lightboxImg.src = img.src;
+                    lightbox.classList.add('active');
+                });
+            });
+
+            // Close lightbox
+            const closeLightbox = () => {
+                lightbox.classList.remove('active');
+                setTimeout(() => { lightboxImg.src = ''; }, 300);
+            };
+
+            closeBtn.addEventListener('click', closeLightbox);
+            lightbox.addEventListener('click', (e) => {
+                if (e.target === lightbox) closeLightbox();
+            });
+
+            // ESC key to close
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                    closeLightbox();
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
