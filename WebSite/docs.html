@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation RetroMad - Guide Complet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .docs-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 5% 50px;
+        }
+
+        .docs-nav {
+            position: fixed;
+            left: 0;
+            top: 80px;
+            width: 250px;
+            height: calc(100vh - 80px);
+            background: rgba(10, 10, 10, 0.95);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem 1rem;
+            overflow-y: auto;
+        }
+
+        .docs-nav h3 {
+            color: var(--primary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+
+        .docs-nav a {
+            display: block;
+            color: #aaa;
+            text-decoration: none;
+            padding: 0.5rem 0.8rem;
+            margin-bottom: 0.3rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .docs-nav a:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        .docs-nav a.active {
+            background: var(--primary);
+            color: black;
+            font-weight: 600;
+        }
+
+        .docs-content {
+            margin-left: 280px;
+            padding: 2rem;
+        }
+
+        .docs-section {
+            margin-bottom: 4rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .docs-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .docs-section h3 {
+            font-size: 1.8rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .docs-section h4 {
+            font-size: 1.3rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+            color: #ddd;
+        }
+
+        .docs-section p {
+            line-height: 1.8;
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+
+        .docs-section ul,
+        .docs-section ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .docs-section li {
+            margin-bottom: 0.8rem;
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            color: var(--primary);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .warning-box {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #ffc107;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+
+        .warning-box p {
+            margin: 0;
+            color: #ffc107;
+        }
+
+        .info-box {
+            background: rgba(0, 170, 255, 0.1);
+            border-left: 4px solid #00aaff;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+
+        .info-box p {
+            margin: 0;
+            color: #00aaff;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: var(--primary);
+            color: black;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .feature-item h5 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-item p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .docs-nav {
+                display: none;
+            }
+
+            .docs-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <header>
+        <div class="logo">RETRO<span class="highlight">MAD</span> <span class="version-tag">Documentation</span></div>
+        <nav>
+            <a href="index.html">Accueil</a>
+            <a href="#installation">Installation</a>
+            <a href="#admin">Administration</a>
+            <a href="#download" class="btn-nav">Télécharger</a>
+        </nav>
+    </header>
+
+    <div class="docs-container">
+        <aside class="docs-nav">
+            <h3>Démarrage</h3>
+            <a href="#installation" class="active">Installation</a>
+            <a href="#first-launch">Premier Lancement</a>
+            <a href="#quick-start">Démarrage Rapide</a>
+
+            <h3>Administration</h3>
+            <a href="#admin-overview">Vue d'ensemble</a>
+            <a href="#system-manager">Gestion Systèmes</a>
+            <a href="#scraper">Scraper</a>
+            <a href="#retroarch">RetroArch</a>
+            <a href="#themes">Thèmes</a>
+            <a href="#kiosk-config">Config Kiosk</a>
+
+            <h3>Utilisation</h3>
+            <a href="#webplay">WebPlay Mobile</a>
+            <a href="#kiosk-mode">Mode Kiosk</a>
+            <a href="#game-launch">Lancer un Jeu</a>
+
+            <h3>Avancé</h3>
+            <a href="#saves">Sauvegardes</a>
+            <a href="#gamepad">Manettes</a>
+            <a href="#troubleshooting">Dépannage</a>
+        </aside>
+
+        <div class="docs-content">
+            <!-- INSTALLATION -->
+            <section id="installation" class="docs-section">
+                <h2><i class="fas fa-download"></i> Installation</h2>
+
+                <h3>Prérequis Système</h3>
+                <ul>
+                    <li><strong>OS :</strong> Windows 10 ou 11 (64-bit)</li>
+                    <li><strong>RAM :</strong> 4 Go minimum (8 Go recommandé)</li>
+                    <li><strong>GPU :</strong> Compatible OpenGL 3.0+ (pour RetroArch)</li>
+                    <li><strong>Espace Disque :</strong> 500 Mo pour l'application + espace pour les jeux</li>
+                    <li><strong>Dépendances :</strong> Visual C++ Redistributable, DirectX 9+</li>
+                </ul>
+
+                <h3>Étapes d'Installation</h3>
+
+                <h4><span class="step-number">1</span> Téléchargement</h4>
+                <p>Téléchargez la dernière version depuis <a href="https://github.com/LordMad74/RetroMad/releases"
+                        style="color: var(--primary);">GitHub Releases</a>.</p>
+                <div class="code-block">
+                    <code>RetroMad_V0.7.0.7z (~85 Mo)</code>
+                </div>
+
+                <h4><span class="step-number">2</span> Extraction</h4>
+                <p>Décompressez l'archive dans un dossier de votre choix (ex: <code>C:\RetroMad</code>).</p>
+                <div class="warning-box">
+                    <p><i class="fas fa-exclamation-triangle"></i> <strong>Important :</strong> Évitez les chemins avec
+                        des espaces ou caractères spéciaux.</p>
+                </div>
+
+                <h4><span class="step-number">3</span> Lancement</h4>
+                <p>Double-cliquez sur <code>Lancer_RetroMad.ps1</code> (script PowerShell).</p>
+                <div class="info-box">
+                    <p><i class="fas fa-info-circle"></i> Si Windows bloque l'exécution, faites clic droit → "Exécuter
+                        avec PowerShell".</p>
+                </div>
+            </section>
+
+            <!-- PREMIER LANCEMENT -->
+            <section id="first-launch" class="docs-section">
+                <h2><i class="fas fa-rocket"></i> Premier Lancement</h2>
+
+                <h3>Interface Principale</h3>
+                <p>Au premier démarrage, vous verrez 4 onglets principaux :</p>
+
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <h5><i class="fas fa-industry"></i> Constructeurs</h5>
+                        <p>Navigation par marque (Nintendo, Sega, Sony...)</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5><i class="fas fa-gamepad"></i> Consoles</h5>
+                        <p>Liste de tous vos systèmes configurés</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5><i class="fas fa-wifi"></i> WebPlay</h5>
+                        <p>Accès mobile via QR Code</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5><i class="fas fa-cog"></i> Admin</h5>
+                        <p>Panneau d'administration complet</p>
+                    </div>
+                </div>
+
+                <h3>Configuration Initiale Recommandée</h3>
+                <ol>
+                    <li>Allez dans <strong>Admin → RetroArch</strong></li>
+                    <li>Cliquez sur "Installer RetroArch (Stable)"</li>
+                    <li>Attendez la fin du téléchargement (~150 Mo)</li>
+                    <li>Cliquez sur "Installer Tous les Cores" pour les émulateurs</li>
+                    <li>Retournez dans <strong>Admin → Systèmes</strong></li>
+                    <li>Ajoutez vos premiers systèmes (voir section suivante)</li>
+                </ol>
+            </section>
+
+            <!-- DÉMARRAGE RAPIDE -->
+            <section id="quick-start" class="docs-section">
+                <h2><i class="fas fa-bolt"></i> Démarrage Rapide (5 minutes)</h2>
+
+                <h3>Ajouter Votre Premier Système</h3>
+
+                <h4><span class="step-number">1</span> Ouvrir le Gestionnaire</h4>
+                <p>Admin → Systèmes → Bouton "+" (Nouveau Système)</p>
+
+                <h4><span class="step-number">2</span> Utiliser un Preset</h4>
+                <p>Cliquez sur "Presets" et choisissez un système populaire (ex: NES, SNES, PlayStation).</p>
+                <div class="info-box">
+                    <p><i class="fas fa-magic"></i> Les presets configurent automatiquement : nom, core RetroArch,
+                        extensions de fichiers, et images.</p>
+                </div>
+
+                <h4><span class="step-number">3</span> Configurer le Dossier ROMs</h4>
+                <p>Dans "Chemin ROMs", indiquez où se trouvent vos jeux (ex: <code>D:\Roms\NES</code>).</p>
+
+                <h4><span class="step-number">4</span> Sauvegarder</h4>
+                <p>Cliquez sur le bouton "Sauvegarder" en haut à droite.</p>
+
+                <h3>Lancer Votre Premier Jeu</h3>
+                <ol>
+                    <li>Retournez à l'onglet <strong>Consoles</strong></li>
+                    <li>Cliquez sur la carte de votre système (ex: NES)</li>
+                    <li>Sélectionnez un jeu dans la liste</li>
+                    <li>Cliquez sur "Lancer" (icône Play)</li>
+                </ol>
+            </section>
+
+            <!-- ADMINISTRATION -->
+            <section id="admin-overview" class="docs-section">
+                <h2><i class="fas fa-tools"></i> Panneau d'Administration</h2>
+
+                <p>Le panneau Admin est le cœur de RetroMad. Il contient 9 sections principales :</p>
+
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <h5><i class="fas fa-chart-line"></i> Dashboard</h5>
+                        <p>Statistiques globales (systèmes, jeux, espace disque)</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5><i class="fas fa-gamepad"></i> Systèmes</h5>
+                        <p>Gestion complète des consoles</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5><i class="fas fa-magic"></i> Scraper</h5>
+                        <p>Téléchargement métadonnées (Skyscraper)</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5><i class="fas fa-cube"></i> RetroArch</h5>
+                        <p>Installation et configuration</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5><i class="fas fa-paint-brush"></i> Thèmes</h5>
+                        <p>Personnalisation visuelle</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5><i class="fas fa-tv"></i> Kiosk</h5>
+                        <p>Configuration mode borne</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5><i class="fas fa-hdd"></i> Sauvegardes</h5>
+                        <p>Backup/Restore automatique</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5><i class="fas fa-gamepad"></i> Manettes</h5>
+                        <p>Test et diagnostic</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5><i class="fas fa-wrench"></i> Maintenance</h5>
+                        <p>Outils système et logs</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- GESTION SYSTÈMES -->
+            <section id="system-manager" class="docs-section">
+                <h2><i class="fas fa-cogs"></i> Gestionnaire de Systèmes</h2>
+
+                <h3>Créer un Système Personnalisé</h3>
+
+                <h4>Informations de Base</h4>
+                <ul>
+                    <li><strong>ID :</strong> Identifiant unique (ex: "NES", "PSX")</li>
+                    <li><strong>Nom :</strong> Nom affiché (ex: "Nintendo Entertainment System")</li>
+                    <li><strong>Constructeur :</strong> Marque (Nintendo, Sega, Sony...)</li>
+                    <li><strong>Année :</strong> Année de sortie</li>
+                </ul>
+
+                <h4>Configuration Technique</h4>
+                <ul>
+                    <li><strong>Core RetroArch :</strong> Émulateur à utiliser (ex: "fceumm_libretro.dll" pour NES)</li>
+                    <li><strong>Extensions :</strong> Formats de fichiers acceptés (ex: ".nes, .zip")</li>
+                    <li><strong>Chemin ROMs :</strong> Dossier contenant les jeux</li>
+                </ul>
+
+                <h4>Médias</h4>
+                <ul>
+                    <li><strong>Image d'en-tête :</strong> Bannière principale (1920x1080 recommandé)</li>
+                    <li><strong>Logo :</strong> Logo du système (PNG transparent)</li>
+                </ul>
+
+                <h3>Recherche Automatique d'Images</h3>
+
+                <h4>Via Pexels (API)</h4>
+                <ol>
+                    <li>Allez dans Admin → Configuration</li>
+                    <li>Entrez votre clé API Pexels (gratuite sur <a href="https://www.pexels.com/api/"
+                            style="color: var(--primary);">pexels.com/api</a>)</li>
+                    <li>Dans l'éditeur de système, cliquez sur "Web" (icône globe)</li>
+                    <li>Sélectionnez une image parmi les résultats</li>
+                </ol>
+
+                <h4>Via IA (Génération)</h4>
+                <div class="warning-box">
+                    <p><i class="fas fa-exclamation-triangle"></i> Fonctionnalité expérimentale. Nécessite une connexion
+                        internet.</p>
+                </div>
+
+                <h3>Import Wikipedia</h3>
+                <p>Pour remplir automatiquement les informations d'un système :</p>
+                <ol>
+                    <li>Cliquez sur "Wikipedia" (icône W)</li>
+                    <li>Entrez le nom exact du système (ex: "Nintendo Entertainment System")</li>
+                    <li>Les champs seront pré-remplis avec les données extraites</li>
+                </ol>
+            </section>
+
+            <!-- SCRAPER -->
+            <section id="scraper" class="docs-section">
+                <h2><i class="fas fa-magic"></i> Scraper (Skyscraper)</h2>
+
+                <h3>Qu'est-ce que le Scraping ?</h3>
+                <p>Le scraping récupère automatiquement les métadonnées de vos jeux depuis des bases de données en ligne
+                    :</p>
+                <ul>
+                    <li>Jaquettes (boxart)</li>
+                    <li>Screenshots</li>
+                    <li>Vidéos de gameplay</li>
+                    <li>Descriptions</li>
+                    <li>Notes et dates de sortie</li>
+                </ul>
+
+                <h3>Configuration ScreenScraper</h3>
+                <div class="info-box">
+                    <p><i class="fas fa-info-circle"></i> Créez un compte gratuit sur <a
+                            href="https://www.screenscraper.fr/" style="color: #00aaff;">screenscraper.fr</a> pour de
+                        meilleures performances.</p>
+                </div>
+
+                <ol>
+                    <li>Ouvrez <code>Skyscraper/config.ini</code></li>
+                    <li>Ajoutez vos identifiants ScreenScraper :
+                        <div class="code-block">
+                            <code>[screenscraper]<br>
+userCreds="votre_username:votre_password"</code>
+                        </div>
+                    </li>
+                </ol>
+
+                <h3>Lancer un Scraping</h3>
+                <ol>
+                    <li>Admin → Scraper</li>
+                    <li>Sélectionnez un système dans la liste</li>
+                    <li>Cliquez sur "Scraper"</li>
+                    <li>Attendez la fin du processus (logs en temps réel)</li>
+                    <li>Cliquez sur "Importer" pour intégrer les données</li>
+                </ol>
+
+                <div class="warning-box">
+                    <p><i class="fas fa-clock"></i> Le scraping peut prendre plusieurs minutes selon le nombre de jeux.
+                    </p>
+                </div>
+            </section>
+
+            <!-- RETROARCH -->
+            <section id="retroarch" class="docs-section">
+                <h2><i class="fas fa-cube"></i> RetroArch Manager</h2>
+
+                <h3>Installation</h3>
+                <p>RetroMad peut installer et gérer RetroArch automatiquement :</p>
+
+                <h4>Version Stable (Recommandée)</h4>
+                <ul>
+                    <li>Testée et fiable</li>
+                    <li>Mise à jour tous les 3-6 mois</li>
+                    <li>Idéale pour la production</li>
+                </ul>
+
+                <h4>Version Nightly (Avancée)</h4>
+                <ul>
+                    <li>Dernières fonctionnalités</li>
+                    <li>Mise à jour quotidienne</li>
+                    <li>Peut contenir des bugs</li>
+                </ul>
+
+                <h3>Gestion des Cores</h3>
+                <p>Les cores sont les émulateurs individuels. RetroMad peut les télécharger automatiquement :</p>
+                <ol>
+                    <li>Admin → RetroArch → Onglet "Cores"</li>
+                    <li>Cliquez sur "Installer Tous les Cores" (recommandé)</li>
+                    <li>Ou installez-les individuellement selon vos besoins</li>
+                </ol>
+
+                <h3>Configuration Avancée</h3>
+
+                <h4>Achievements (RetroAchievements)</h4>
+                <ol>
+                    <li>Créez un compte sur <a href="https://retroachievements.org/"
+                            style="color: var(--primary);">retroachievements.org</a></li>
+                    <li>Admin → RetroArch → Onglet "Achievements"</li>
+                    <li>Activez "Achievements" et entrez vos identifiants</li>
+                </ol>
+
+                <h4>Shaders CRT</h4>
+                <p>Les shaders recréent l'effet des anciens écrans cathodiques :</p>
+                <ul>
+                    <li><strong>CRT-Royale :</strong> Effet scanlines réaliste</li>
+                    <li><strong>CRT-Geom :</strong> Courbure d'écran</li>
+                    <li><strong>Zfast-CRT :</strong> Léger et performant</li>
+                </ul>
+
+                <h4>Bezels (Cadres)</h4>
+                <p>Ajoutez des cadres thématiques autour de l'écran de jeu pour un look authentique.</p>
+            </section>
+
+            <!-- THÈMES -->
+            <section id="themes" class="docs-section">
+                <h2><i class="fas fa-palette"></i> Éditeur de Thèmes</h2>
+
+                <h3>Presets Disponibles</h3>
+
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <h5>Origin (Défaut)</h5>
+                        <p>Bleu électrique, design moderne</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5>Neon Arcade</h5>
+                        <p>Rose/cyan, style années 80</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5>Matrix</h5>
+                        <p>Vert terminal, ambiance hacker</p>
+                    </div>
+                    <div class="feature-item">
+                        <h5>Gold</h5>
+                        <p>Or luxueux, élégant</p>
+                    </div>
+                </div>
+
+                <h3>Personnalisation</h3>
+                <p>Vous pouvez modifier 15+ variables CSS en temps réel :</p>
+                <ul>
+                    <li><strong>Couleurs :</strong> Fond, accent, texte, bordures</li>
+                    <li><strong>Effets :</strong> Intensité du flou, force du glow</li>
+                    <li><strong>Géométrie :</strong> Rayons de bordure</li>
+                    <li><strong>Typographie :</strong> Police de caractères</li>
+                </ul>
+
+                <h3>Mode Randomize</h3>
+                <p>Cliquez sur "Randomize" pour générer une palette de couleurs aléatoire et trouver l'inspiration !</p>
+            </section>
+
+            <!-- KIOSK CONFIG -->
+            <section id="kiosk-config" class="docs-section">
+                <h2><i class="fas fa-tv"></i> Configuration Mode Kiosk</h2>
+
+                <h3>Qu'est-ce que le Mode Kiosk ?</h3>
+                <p>Le mode Kiosk transforme RetroMad en borne d'arcade professionnelle :</p>
+                <ul>
+                    <li>Interface plein écran verrouillée</li>
+                    <li>Navigation uniquement au clavier/manette</li>
+                    <li>Code PIN pour sortir</li>
+                    <li>Économiseur d'écran automatique (Attract Mode)</li>
+                </ul>
+
+                <h3>Configuration</h3>
+                <ol>
+                    <li>Admin → Kiosk</li>
+                    <li>Choisissez un thème (Neon, Cyberpunk, Retrowave, Glass)</li>
+                    <li>Configurez le délai d'inactivité (secondes avant Attract Mode)</li>
+                    <li>Définissez un code PIN de sortie</li>
+                    <li>Activez/désactivez les effets sonores</li>
+                </ol>
+
+                <h3>Activer le Mode Kiosk</h3>
+                <p>Depuis l'interface principale, cliquez sur l'icône <i class="fas fa-tv"></i> (Monitor) en haut à
+                    droite.</p>
+
+                <h3>Sortir du Mode Kiosk</h3>
+                <p>Appuyez sur <kbd>Échap</kbd> 3 fois rapidement, puis entrez le code PIN.</p>
+            </section>
+
+            <!-- WEBPLAY -->
+            <section id="webplay" class="docs-section">
+                <h2><i class="fas fa-wifi"></i> WebPlay Mobile</h2>
+
+                <h3>Fonctionnement</h3>
+                <p>WebPlay expose votre bibliothèque sur le réseau local via un serveur web intégré.</p>
+
+                <h3>Connexion</h3>
+                <ol>
+                    <li>Assurez-vous que votre PC et mobile sont sur le même Wi-Fi</li>
+                    <li>Allez dans l'onglet <strong>WebPlay</strong></li>
+                    <li>Scannez le QR Code avec votre téléphone</li>
+                    <li>Ou tapez l'adresse IP affichée dans votre navigateur mobile</li>
+                </ol>
+
+                <h3>Modes de Jeu</h3>
+
+                <h4>Mode Streaming (Par défaut)</h4>
+                <ul>
+                    <li>Le jeu tourne sur votre PC</li>
+                    <li>L'image est streamée vers votre mobile (MJPEG)</li>
+                    <li>Latence minimale sur réseau local</li>
+                </ul>
+
+                <h4>Mode Local (WASM)</h4>
+                <ul>
+                    <li>Le jeu tourne directement dans votre navigateur mobile</li>
+                    <li>Utilise WebAssembly (Nostalgist/RetroArch)</li>
+                    <li>Aucune latence réseau</li>
+                    <li>Nécessite un smartphone puissant</li>
+                </ul>
+
+                <h3>Manettes</h3>
+                <ul>
+                    <li><strong>Tactile :</strong> Interface D-Pad + boutons avec retour haptique</li>
+                    <li><strong>Bluetooth :</strong> Connectez une manette PS4/Xbox à votre mobile</li>
+                </ul>
+            </section>
+
+            <!-- MODE KIOSK -->
+            <section id="kiosk-mode" class="docs-section">
+                <h2><i class="fas fa-desktop"></i> Utilisation Mode Kiosk</h2>
+
+                <h3>Navigation</h3>
+
+                <h4>Clavier</h4>
+                <ul>
+                    <li><kbd>←</kbd> <kbd>→</kbd> : Naviguer entre les systèmes</li>
+                    <li><kbd>↑</kbd> <kbd>↓</kbd> : Naviguer dans la liste de jeux</li>
+                    <li><kbd>Entrée</kbd> : Sélectionner</li>
+                    <li><kbd>Échap</kbd> : Retour</li>
+                </ul>
+
+                <h4>Manette</h4>
+                <ul>
+                    <li><strong>D-Pad :</strong> Navigation</li>
+                    <li><strong>A/Croix :</strong> Sélectionner</li>
+                    <li><strong>B/Rond :</strong> Retour</li>
+                </ul>
+
+                <h3>Styles d'Affichage</h3>
+
+                <h4>System Wheel (Roue)</h4>
+                <p>Les systèmes défilent en cercle avec effet 3D.</p>
+
+                <h4>CoinOps Style</h4>
+                <p>Grille de jaquettes avec aperçu central.</p>
+            </section>
+
+            <!-- LANCER UN JEU -->
+            <section id="game-launch" class="docs-section">
+                <h2><i class="fas fa-play"></i> Lancer un Jeu</h2>
+
+                <h3>Depuis l'Interface Principale</h3>
+                <ol>
+                    <li>Sélectionnez un système (onglet Consoles)</li>
+                    <li>Cliquez sur un jeu dans la liste</li>
+                    <li>Une fiche détaillée s'affiche avec :
+                        <ul>
+                            <li>Jaquette</li>
+                            <li>Description</li>
+                            <li>Note</li>
+                            <li>Date de sortie</li>
+                        </ul>
+                    </li>
+                    <li>Cliquez sur le bouton "Lancer" (icône Play)</li>
+                </ol>
+
+                <h3>Options de Lancement</h3>
+                <ul>
+                    <li><strong>Lancer (Local) :</strong> Utilise RetroArch installé sur votre PC</li>
+                    <li><strong>Lancer (WebPlay) :</strong> Ouvre le jeu dans le navigateur mobile</li>
+                </ul>
+
+                <h3>Contrôles en Jeu</h3>
+                <p>Les contrôles dépendent du core RetroArch utilisé. Par défaut :</p>
+                <ul>
+                    <li><kbd>F1</kbd> : Menu RetroArch</li>
+                    <li><kbd>F2</kbd> : Sauvegarde rapide</li>
+                    <li><kbd>F4</kbd> : Chargement rapide</li>
+                    <li><kbd>Échap</kbd> : Quitter le jeu</li>
+                </ul>
+            </section>
+
+            <!-- SAUVEGARDES -->
+            <section id="saves" class="docs-section">
+                <h2><i class="fas fa-hdd"></i> Gestionnaire de Sauvegardes</h2>
+
+                <h3>Créer un Backup</h3>
+                <ol>
+                    <li>Admin → Sauvegardes</li>
+                    <li>Cliquez sur "Créer une Sauvegarde"</li>
+                    <li>Un fichier .zip est créé avec :
+                        <ul>
+                            <li>Configuration RetroMad</li>
+                            <li>Sauvegardes RetroArch (.srm)</li>
+                            <li>Save states (.state)</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h3>Restaurer un Backup</h3>
+                <ol>
+                    <li>Sélectionnez un backup dans la liste</li>
+                    <li>Cliquez sur "Restaurer"</li>
+                    <li>Confirmez l'opération</li>
+                    <li>Redémarrez RetroMad</li>
+                </ol>
+
+                <div class="warning-box">
+                    <p><i class="fas fa-exclamation-triangle"></i> La restauration écrase les données actuelles. Créez
+                        un backup avant de restaurer !</p>
+                </div>
+            </section>
+
+            <!-- MANETTES -->
+            <section id="gamepad" class="docs-section">
+                <h2><i class="fas fa-gamepad"></i> Testeur de Manettes</h2>
+
+                <h3>Tester une Manette</h3>
+                <ol>
+                    <li>Connectez votre manette (USB ou Bluetooth)</li>
+                    <li>Admin → Manettes</li>
+                    <li>La manette est détectée automatiquement</li>
+                    <li>Appuyez sur les boutons pour voir la visualisation en temps réel</li>
+                </ol>
+
+                <h3>Manettes Supportées</h3>
+                <ul>
+                    <li>Xbox One / Series (USB/Bluetooth)</li>
+                    <li>PlayStation 4 / 5 (USB/Bluetooth)</li>
+                    <li>Nintendo Switch Pro Controller</li>
+                    <li>Manettes génériques DirectInput/XInput</li>
+                </ul>
+
+                <h3>Configuration dans RetroArch</h3>
+                <p>RetroArch détecte automatiquement la plupart des manettes. Pour une configuration manuelle :</p>
+                <ol>
+                    <li>Lancez un jeu</li>
+                    <li>Appuyez sur <kbd>F1</kbd> (Menu RetroArch)</li>
+                    <li>Settings → Input → Port 1 Controls</li>
+                    <li>Mappez chaque bouton</li>
+                </ol>
+            </section>
+
+            <!-- DÉPANNAGE -->
+            <section id="troubleshooting" class="docs-section">
+                <h2><i class="fas fa-wrench"></i> Dépannage</h2>
+
+                <h3>RetroMad ne démarre pas</h3>
+                <ul>
+                    <li>Vérifiez que PowerShell est autorisé à exécuter des scripts</li>
+                    <li>Lancez en tant qu'administrateur</li>
+                    <li>Vérifiez les logs dans <code>logs/</code></li>
+                </ul>
+
+                <h3>RetroArch ne s'installe pas</h3>
+                <ul>
+                    <li>Vérifiez votre connexion internet</li>
+                    <li>Désactivez temporairement l'antivirus</li>
+                    <li>Téléchargez manuellement depuis <a href="https://www.retroarch.com/"
+                            style="color: var(--primary);">retroarch.com</a></li>
+                </ul>
+
+                <h3>Les jeux ne se lancent pas</h3>
+                <ul>
+                    <li>Vérifiez que le core RetroArch est installé</li>
+                    <li>Vérifiez le chemin des ROMs</li>
+                    <li>Vérifiez les extensions de fichiers acceptées</li>
+                    <li>Consultez les logs : Admin → Maintenance → Logs</li>
+                </ul>
+
+                <h3>WebPlay ne fonctionne pas</h3>
+                <ul>
+                    <li>Vérifiez que PC et mobile sont sur le même réseau</li>
+                    <li>Désactivez le pare-feu Windows temporairement</li>
+                    <li>Vérifiez que le port 3000 n'est pas bloqué</li>
+                </ul>
+
+                <h3>Obtenir de l'Aide</h3>
+                <p>Si le problème persiste :</p>
+                <ol>
+                    <li>Consultez les logs : Admin → Maintenance</li>
+                    <li>Ouvrez une issue sur <a href="https://github.com/LordMad74/RetroMad/issues"
+                            style="color: var(--primary);">GitHub</a></li>
+                    <li>Incluez : version de RetroMad, OS, logs d'erreur</li>
+                </ol>
+            </section>
+        </div>
+    </div>
+
+    <footer>
+        <div class="copyright">
+            &copy; 2026 RetroMad Documentation • <a href="index.html" style="color: var(--primary);">Retour à
+                l'accueil</a>
+        </div>
+    </footer>
+</body>
+
+</html>
