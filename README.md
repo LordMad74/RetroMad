@@ -18,7 +18,7 @@ Portail de Retrogaming pour Windows et Arcade.
 - `electron/` : Code du processus principal (Window management).
 - `dist/` : Fichiers compilés.
 
-## Nouveautés (Version 0.7.0 - Mise à jour depuis v0.6.6)
+## Nouveautés (Version 0.7.5 - Mise à jour depuis v0.7.0)
 - **Émulation Locale Intégrée (WASM)** : Plus besoin d'application tierce ! Lancez vos ROMs directement dans le navigateur du téléphone grâce au moteur Nostalgist/RetroArch.
 - **Manette Mobile 2.0** :
     - **Ergonomie optimisée** : Boutons recentrés (offset 80px) pour éviter de trop étirer les mains.
@@ -36,4 +36,4 @@ Portail de Retrogaming pour Windows et Arcade.
 4. Pour une meilleure expérience, ajoutez le site à votre écran d'accueil (PWA).
 
 ## Build de Test
-Le build portable actuel est : **`RetroMad_Build_V0.7.0.7z`**
+Le build portable actuel est : **`RetroMad_Build_V0.7.5.7z`**
