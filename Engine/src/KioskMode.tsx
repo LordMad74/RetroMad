@@ -531,12 +531,16 @@ export default function KioskMode({ config, onExit }: { config: any, onExit: () 
                                         <img
                                             src={man.logo}
                                             style={{
-                                                maxWidth: '90%',
-                                                maxHeight: '90%',
-                                                objectFit: 'contain',
+                                                position: 'absolute',
+                                                top: 0,
+                                                left: 0,
+                                                width: '100%',
+                                                height: '100%',
+                                                objectFit: 'cover',
+                                                objectPosition: 'center',
                                                 filter: 'drop-shadow(0 0 10px rgba(0,0,0,0.5))',
-                                                WebkitMaskImage: 'radial-gradient(ellipse 85% 80% at center, black 50%, transparent 100%)',
-                                                maskImage: 'radial-gradient(ellipse 85% 80% at center, black 50%, transparent 100%)'
+                                                WebkitMaskImage: 'radial-gradient(ellipse 90% 85% at center, black 60%, transparent 100%)',
+                                                maskImage: 'radial-gradient(ellipse 90% 85% at center, black 60%, transparent 100%)'
                                             }}
                                         />
                                     ) : (
