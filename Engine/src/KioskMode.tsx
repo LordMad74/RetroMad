@@ -24,7 +24,9 @@ const THEMES = {
     }
 };
 
-export default function KioskMode({ themeName = 'neon_arcade', backgroundEffect = 'nebula', onExit }: { themeName?: string, backgroundEffect?: 'stars' | 'nebula' | 'grid' | 'none', onExit: () => void }) {
+export default function KioskMode({ config, onExit }: { config: any, onExit: () => void }) {
+    const themeName = config.theme || 'neon_arcade';
+    const backgroundEffect = config.effect || 'none';
     const [allSystems, setAllSystems] = useState<any[]>([]);
     const [systems, setSystems] = useState<any[]>([]);
     const [manufacturers, setManufacturers] = useState<any[]>([]);
@@ -38,7 +40,12 @@ export default function KioskMode({ themeName = 'neon_arcade', backgroundEffect 
     const [pexelsData, setPexelsData] = useState<string | null>(null);
 
     // Theme resolving
-    const theme = THEMES[themeName as keyof typeof THEMES] || THEMES['neon_arcade'];
+    const baseTheme = THEMES[themeName as keyof typeof THEMES] || THEMES['neon_arcade'];
+    const theme = {
+        ...baseTheme,
+        accent: config.accentColor || baseTheme.accent,
+        font: config.fontFamily || baseTheme.font
+    };
 
     // Map system IDs to readable names if needed
     const systemMap: Record<string, string> = {
@@ -290,7 +297,10 @@ export default function KioskMode({ themeName = 'neon_arcade', backgroundEffect 
                     <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundImage: bgImage ? `url(${bgImage})` : 'none', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.6, filter: bgImage ? 'blur(8px) brightness(0.7)' : 'none', transform: 'scale(1.1)' }} />
                     <div className="particles" style={{ position: 'absolute', width: '100%', height: '100%' }} />
                 </motion.div>
-                <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 10, background: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))', backgroundSize: '100% 2px, 3px 100%', pointerEvents: 'none' }} />
+
+                {config.scanlines && (
+                    <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))', backgroundSize: '100% 4px, 3px 100%', zIndex: 10 }} />
+                )}
 
                 <div style={{ position: 'absolute', top: '8%', left: '0', width: '100%', height: '50vmin', perspective: '100vw', zIndex: 20, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     {systems.map((sys, i) => {
@@ -321,7 +331,25 @@ export default function KioskMode({ themeName = 'neon_arcade', backgroundEffect 
                                     const logoUrl = sys.logo || (isCenter ? wikiData?.thumbnail : null);
                                     return (
                                         <div style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                            {logoUrl && <img src={logoUrl} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', transform: 'scale(1.2)', filter: isCenter ? 'brightness(1.1)' : 'grayscale(80%) brightness(0.6)', transition: 'filter 0.5s', zIndex: 0 }} />}
+                                            {logoUrl && (
+                                                <img
+                                                    src={logoUrl}
+                                                    style={{
+                                                        position: 'absolute',
+                                                        top: 0,
+                                                        left: 0,
+                                                        width: '100%',
+                                                        height: '100%',
+                                                        objectFit: 'cover',
+                                                        transform: 'scale(1.2)',
+                                                        filter: isCenter ? 'brightness(1.1)' : 'grayscale(80%) brightness(0.6)',
+                                                        transition: 'filter 0.5s',
+                                                        zIndex: 0,
+                                                        WebkitMaskImage: 'radial-gradient(ellipse 88% 82% at center, black 55%, transparent 100%)',
+                                                        maskImage: 'radial-gradient(ellipse 88% 82% at center, black 55%, transparent 100%)'
+                                                    }}
+                                                />
+                                            )}
                                             <div style={{ position: 'absolute', bottom: '-1px', left: '-1px', width: '100.5%', padding: '10vmin 0 2vmin 0', zIndex: 1, display: 'flex', justifyContent: 'center', alignItems: 'flex-end', background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 100%)', borderRadius: '0 0 20px 20px' }}>
                                                 <div style={{ fontSize: isCenter ? '4vmin' : '2.5vmin', color: 'white', textShadow: `0 0 20px ${theme.accent}, 0 0 5px black`, fontWeight: 'bold', fontFamily: theme.font, textAlign: 'center', letterSpacing: '0.5vmin' }}>{sys.name.toUpperCase()}</div>
                                             </div>
@@ -435,8 +463,14 @@ export default function KioskMode({ themeName = 'neon_arcade', backgroundEffect 
                                     const opacity = Math.max(0, 1 - Math.abs(item.offset) * 0.5);
                                     const zIndex = 100 - Math.abs(item.offset);
                                     return (
-                                        <motion.div key={item.key} initial={false} animate={{ y: -50 + yOff, x: -xOff, scale: scale, opacity: opacity, zIndex: zIndex }} transition={{ type: 'spring', stiffness: 300, damping: 20 }} style={{ position: 'absolute', top: '50%', right: '20px', textAlign: 'right', width: '300px', height: '100px', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', transformOrigin: 'right center' }}>
-                                            {item.wheel ? <img src={`media://${item.wheel}`} style={{ maxHeight: '120%', maxWidth: '100%', objectFit: 'contain', filter: 'drop-shadow(2px 2px 2px black)' }} /> : <span style={{ fontFamily: theme.font, fontSize: '1.5em', fontWeight: 'bold', textShadow: '2px 2px 4px black', color: 'white', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.name}</span>}
+                                        <motion.div
+                                            key={item.key}
+                                            initial={false}
+                                            animate={{ y: -50 + yOff, x: -xOff, scale: scale, opacity: opacity, zIndex: zIndex, rotateY: item.offset === 0 ? 0 : (config.wheelTilt || 0) }}
+                                            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                                            style={{ position: 'absolute', top: '50%', right: '20px', textAlign: 'right', width: '300px', height: '100px', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', transformOrigin: 'right center', perspective: '1000px' }}
+                                        >
+                                            {item.wheel ? <img src={`media://${item.wheel}`} style={{ maxHeight: '120%', maxWidth: '100%', objectFit: 'contain', filter: `drop-shadow(2px 2px 2px black) drop-shadow(0 0 ${item.offset === 0 ? (config.glowIntensity ? config.glowIntensity / 10 : 10) : 0}px ${theme.accent})` }} /> : <span style={{ fontFamily: theme.font, fontSize: '1.5em', fontWeight: 'bold', textShadow: `2px 2px 4px black, 0 0 ${item.offset === 0 ? 15 : 0}px ${theme.accent}`, color: 'white', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.name}</span>}
                                         </motion.div>
                                     );
                                 });
@@ -444,6 +478,10 @@ export default function KioskMode({ themeName = 'neon_arcade', backgroundEffect 
                         </div>
                     </div>
                 </motion.div>
+
+                {config.scanlines && (
+                    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 100, background: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))', backgroundSize: '100% 2px, 3px 100%', pointerEvents: 'none' }} />
+                )}
 
                 {isIdle && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ position: 'absolute', bottom: '50px', width: '100%', textAlign: 'center', zIndex: 50, color: theme.accent, textShadow: '0 0 10px black' }}>
@@ -489,7 +527,21 @@ export default function KioskMode({ themeName = 'neon_arcade', backgroundEffect 
                             <motion.div key={man.id} animate={{ x: `${offset * 25}vw`, z: Math.abs(offset) * -200, rotateY: offset * 25, scale: 1 - Math.abs(offset) * 0.2, opacity: 1 - Math.abs(offset) * 0.4, zIndex: 100 - Math.abs(offset) }} transition={{ type: 'spring', stiffness: 120, damping: 14, mass: 1 }}
                                 style={{ position: 'absolute', width: isCenter ? '44vmin' : '28vmin', height: isCenter ? '33vmin' : '21vmin', background: isCenter ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0,0,0,0.5)', border: `2px solid ${isCenter ? theme.accent : '#333'}`, borderRadius: '20px', overflow: 'hidden', boxShadow: isCenter ? `0 0 80px ${theme.accent}66, inset 0 0 150px ${theme.accent}aa` : 'none', backdropFilter: 'blur(5px)', fontSize: '1vmin' }}>
                                 <div style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-                                    {man.logo ? <img src={man.logo} style={{ maxWidth: '90%', maxHeight: '90%', objectFit: 'contain', filter: 'drop-shadow(0 0 10px rgba(0,0,0,0.5))' }} /> : <h2 style={{ color: 'white' }}>{man.name}</h2>}
+                                    {man.logo ? (
+                                        <img
+                                            src={man.logo}
+                                            style={{
+                                                maxWidth: '90%',
+                                                maxHeight: '90%',
+                                                objectFit: 'contain',
+                                                filter: 'drop-shadow(0 0 10px rgba(0,0,0,0.5))',
+                                                WebkitMaskImage: 'radial-gradient(ellipse 85% 80% at center, black 50%, transparent 100%)',
+                                                maskImage: 'radial-gradient(ellipse 85% 80% at center, black 50%, transparent 100%)'
+                                            }}
+                                        />
+                                    ) : (
+                                        <h2 style={{ color: 'white' }}>{man.name}</h2>
+                                    )}
                                 </div>
                             </motion.div>
                         );
