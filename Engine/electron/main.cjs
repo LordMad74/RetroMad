@@ -11,6 +11,34 @@ protocol.registerSchemesAsPrivileged([
     { scheme: 'media', privileges: { secure: true, standard: true, supportFetchAPI: true, stream: true } }
 ]);
 
+let splashWindow;
+let mainWin;
+let isMainWinReady = false;
+
+
+function createSplashWindow() {
+    splashWindow = new BrowserWindow({
+        width: 1280,
+        height: 720,
+        transparent: false, // Changed to false for better video compatibility
+        frame: false,
+        alwaysOnTop: true,
+        fullscreen: true,
+        backgroundColor: '#0a0a0f',
+        webPreferences: {
+            nodeIntegration: false,
+            contextIsolation: true,
+            preload: path.join(__dirname, 'preload.cjs'), // Reuse preload
+            webSecurity: false
+        }
+    });
+
+
+    splashWindow.loadFile(path.join(__dirname, 'splash.html'));
+    splashWindow.on('closed', () => (splashWindow = null));
+}
+
+
 function createWindow() {
     /**
      * Gestionnaire du protocole 'media'.
@@ -33,11 +61,12 @@ function createWindow() {
         }
     });
 
-    const mainWindow = new BrowserWindow({
+    mainWin = new BrowserWindow({
         width: 1280,
         height: 720,
         fullscreen: true,
         frame: false,
+        show: false, // Don't show immediately
         autoHideMenuBar: true,
         webPreferences: {
             nodeIntegration: false,
@@ -48,28 +77,34 @@ function createWindow() {
         backgroundColor: '#0f0f13'
     });
 
+
     // Enlever le menu complètement
     Menu.setApplicationMenu(null);
 
     const startUrl = process.env.ELECTRON_START_URL || 'http://localhost:5173';
 
     if (process.env.NODE_ENV === 'development') {
-        mainWindow.loadURL('http://localhost:5173');
-        mainWindow.webContents.openDevTools();
+        mainWin.loadURL('http://localhost:5173');
+        // In dev, we might want tools open
+        // mainWin.webContents.openDevTools();
     } else {
         const indexPath = path.resolve(__dirname, '../dist/index.html');
-        mainWindow.loadFile(indexPath).catch(err => {
+        mainWin.loadFile(indexPath).catch(err => {
             console.error('Failed to load index.html:', err);
-            mainWindow.loadURL('data:text/html;charset=utf-8,' + encodeURI(`
-                <body style="background:#0a0a0f;color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;">
-                    <h1>Erreur de Chargement</h1>
-                    <p>Fichier production introuvable : ${indexPath}</p>
-                    <p>Vérifiez que vous avez bien lancé le build avant (ou utilisez le lanceur PS1).</p>
-                </body>
-            `));
         });
     }
+
+    // SPLASH LOGIC: Main window is ready but we wait for splash signaling
+    mainWin.once('ready-to-show', () => {
+        isMainWinReady = true;
+        if (process.env.NODE_ENV === 'development') {
+            mainWin.webContents.openDevTools();
+        }
+    });
 }
+
+
+
 
 /**
  * Récupère le chemin racine des données utilisateur (le dossier 'Content').
@@ -326,6 +361,25 @@ ipcMain.on('app-quit', () => {
     app.quit();
 });
 
+ipcMain.on('splash-finished', () => {
+    const showApp = () => {
+        if (splashWindow) splashWindow.close();
+        if (mainWin) {
+            mainWin.show();
+            mainWin.focus();
+        }
+    };
+
+    if (isMainWinReady) {
+        showApp();
+    } else {
+        // Wait for it to be ready
+        if (mainWin) mainWin.once('ready-to-show', showApp);
+    }
+});
+
+
+
 /**
  * Vérifie si une nouvelle version est disponible sur le dépôt GitHub.
  * Utilise l'API GitHub publique pour comparer le tag local avec le dernier tag distant.
@@ -371,8 +425,7 @@ app.on('remote-command', async ({ action, payload }) => {
         case 'launch':
             if (payload.system && payload.game) {
                 // Signal frontend to stop BGM if playing
-                const win = BrowserWindow.getAllWindows()[0];
-                if (win) win.webContents.send('remote-action', { type: 'launch-start' });
+                if (mainWin) mainWin.webContents.send('remote-action', { type: 'launch-start' });
 
                 const games = await databaseManager.getGames(payload.system);
                 const game = games.find(g => g.id === payload.game);
@@ -384,14 +437,12 @@ app.on('remote-command', async ({ action, payload }) => {
 
         case 'volume':
             // Logic to change OS volume or send command to frontend
-            const win = BrowserWindow.getAllWindows()[0];
-            if (win) win.webContents.send('remote-action', { type: 'volume', value: payload.value });
+            if (mainWin) mainWin.webContents.send('remote-action', { type: 'volume', value: payload.value });
             break;
 
         case 'nav':
             // Forward navigation to frontend (Up, Down, Left, Right, Select, Back)
-            const activeWin = BrowserWindow.getAllWindows()[0];
-            if (activeWin) activeWin.webContents.send('remote-action', { type: 'nav', key: payload.key });
+            if (mainWin) mainWin.webContents.send('remote-action', { type: 'nav', key: payload.key });
             break;
 
         case 'quit-game':
@@ -509,13 +560,15 @@ function handleGamepadKey(action, key) {
 app.whenReady().then(() => {
     initializeDirectories();
     ensurePsBridge(); // Pre-warm the input bridge!
+    createSplashWindow(); // Show splash first
     createWindow();
 
     app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) {
+        if (!mainWin || mainWin.isDestroyed()) {
             createWindow();
         }
     });
+
 });
 
 app.on('window-all-closed', () => {
