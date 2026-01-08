@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RetroMad - L'Émulation Next-Gen</title>
+    <title>RetroMad - Station d'Émulation Next-Gen</title>
+    <meta name="description"
+        content="RetroMad: La station d'émulation portable la plus avancée. WebPlay mobile, Mode Kiosk, Admin complet, Scraping auto, Thèmes dynamiques.">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -18,133 +20,304 @@
     <header>
         <div class="logo">RETRO<span class="highlight">MAD</span> <span class="version-tag">v0.7.0</span></div>
         <nav>
-            <a href="#webplay">WebPlay</a>
-            <a href="#kiosk">Mode Kiosk</a>
             <a href="#features">Fonctions</a>
+            <a href="#admin">Admin</a>
+            <a href="#tech">Technique</a>
             <a href="#download" class="btn-nav">Télécharger</a>
         </nav>
     </header>
 
     <main>
-        <!-- HERO SECTION -->
+        <!-- HERO -->
         <section class="hero">
             <div class="hero-content">
-                <div class="badge-hero">NOUVEAU: MOTEUR WASM INTÉGRÉ</div>
-                <h1>L'Arcade<br><span class="gradient-text">Réinventée.</span></h1>
-                <p>N'installez plus rien. RetroMad est une station d'émulation portable, autonome et ultra-moderne.
-                    Jouez sur PC ou transformez votre smartphone en console via le navigateur.</p>
+                <div class="badge-hero">🚀 MOTEUR WASM • MODE KIOSK • SCRAPING AUTO</div>
+                <h1>La Station<br><span class="gradient-text">Ultime.</span></h1>
+                <p>RetroMad n'est pas qu'un frontend. C'est un écosystème complet : émulation locale WASM, streaming
+                    mobile, gestion avancée, thèmes dynamiques et mode borne d'arcade professionnel.</p>
                 <div class="cta-group">
-                    <a href="#download" class="btn btn-primary"><i class="fas fa-download"></i> Télécharger
-                        (Portable)</a>
+                    <a href="#download" class="btn btn-primary"><i class="fas fa-download"></i> Télécharger</a>
                     <a href="https://github.com/LordMad74/RetroMad" target="_blank" class="btn btn-secondary"><i
                             class="fab fa-github"></i> GitHub</a>
                 </div>
             </div>
             <div class="hero-visual">
                 <div class="screenshot-showcase">
-                    <img src="images/manufacturers.png" alt="RetroMad Interface - Constructeurs"
-                        class="hero-screenshot">
+                    <img src="images/manufacturers.png" alt="RetroMad Interface" class="hero-screenshot">
                 </div>
             </div>
         </section>
 
-        <!-- WEBPLAY SECTION -->
-        <section id="webplay" class="feature-highlight right">
-            <div class="feature-text">
-                <h2>WebPlay mobile & WASM</h2>
-                <p class="subtitle">Votre téléphone devient la console.</p>
-                <ul class="feature-list">
-                    <li><i class="fas fa-qrcode"></i> <strong>Scan & Play :</strong> Scannez le QR Code sur votre PC,
-                        jouez instantanément sur mobile.</li>
-                    <li><i class="fas fa-microchip"></i> <strong>Moteur WASM :</strong> Émulation locale puissante
-                        (Nostalgist/RetroArch) directement dans Chrome/Safari.</li>
-                    <li><i class="fas fa-gamepad"></i> <strong>Manette Tactile ou Bluetooth :</strong> Support complet
-                        des contrôleurs PS4/Xbox ou interface tactile haptique.</li>
-                </ul>
-            </div>
-            <div class="feature-visual">
-                <div class="screenshot-frame">
-                    <img src="images/webplay.png" alt="WebPlay - Jouez sur mobile" class="feature-screenshot">
+        <!-- CORE FEATURES GRID -->
+        <section id="features" class="features-mega">
+            <h2>Fonctionnalités Complètes</h2>
+            <p class="section-subtitle">Tout ce dont vous avez besoin, intégré nativement</p>
+
+            <div class="mega-grid">
+                <!-- WebPlay -->
+                <div class="mega-card primary">
+                    <div class="mega-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <h3>WebPlay Network</h3>
+                    <p>Jouez sur n'importe quel appareil via Wi-Fi</p>
+                    <ul class="feature-bullets">
+                        <li><i class="fas fa-qrcode"></i> QR Code instantané</li>
+                        <li><i class="fas fa-microchip"></i> Émulation WASM locale (Nostalgist/RetroArch)</li>
+                        <li><i class="fas fa-gamepad"></i> Support manettes Bluetooth (PS4/Xbox)</li>
+                        <li><i class="fas fa-video"></i> Streaming MJPEG haute performance</li>
+                        <li><i class="fas fa-globe"></i> Compatible tous navigateurs (iOS, Android, PC)</li>
+                    </ul>
+                    <div class="tech-badge">Serveur Express intégré • Port 3000</div>
+                </div>
+
+                <!-- Kiosk Mode -->
+                <div class="mega-card accent">
+                    <div class="mega-icon"><i class="fas fa-tv"></i></div>
+                    <h3>Mode Kiosk (Borne d'Arcade)</h3>
+                    <p>Interface professionnelle verrouillée</p>
+                    <ul class="feature-bullets">
+                        <li><i class="fas fa-lock"></i> Verrouillage total avec code PIN</li>
+                        <li><i class="fas fa-palette"></i> 4 thèmes : Neon, Cyberpunk, Retrowave, Glass</li>
+                        <li><i class="fas fa-film"></i> Attract Mode automatique (économiseur d'écran)</li>
+                        <li><i class="fas fa-sliders-h"></i> Délai d'inactivité configurable</li>
+                        <li><i class="fas fa-circle-notch"></i> Roue de sélection style CoinOps</li>
+                    </ul>
+                    <div class="tech-badge">Navigation clavier/manette • Effets sonores</div>
+                </div>
+
+                <!-- System Manager -->
+                <div class="mega-card">
+                    <div class="mega-icon"><i class="fas fa-cogs"></i></div>
+                    <h3>Gestionnaire de Systèmes</h3>
+                    <p>Configuration avancée des consoles</p>
+                    <ul class="feature-bullets">
+                        <li><i class="fas fa-plus-circle"></i> Création/édition de systèmes</li>
+                        <li><i class="fas fa-image"></i> Recherche auto d'images (Pexels API)</li>
+                        <li><i class="fas fa-robot"></i> Génération d'images par IA</li>
+                        <li><i class="fas fa-wikipedia-w"></i> Import Wikipedia automatique</li>
+                        <li><i class="fas fa-file-code"></i> Presets JSON pour systèmes populaires</li>
+                        <li><i class="fas fa-link"></i> Association cores RetroArch</li>
+                    </ul>
+                </div>
+
+                <!-- Scraper -->
+                <div class="mega-card">
+                    <div class="mega-icon"><i class="fas fa-magic"></i></div>
+                    <h3>Scraper Skyscraper</h3>
+                    <p>Métadonnées automatiques</p>
+                    <ul class="feature-bullets">
+                        <li><i class="fas fa-database"></i> Skyscraper intégré (ScreenScraper)</li>
+                        <li><i class="fas fa-images"></i> Jaquettes, screenshots, vidéos</li>
+                        <li><i class="fas fa-file-alt"></i> Descriptions et notes</li>
+                        <li><i class="fas fa-sync"></i> Import gamelist.xml automatique</li>
+                        <li><i class="fas fa-terminal"></i> Logs en temps réel</li>
+                    </ul>
+                </div>
+
+                <!-- Theme Editor -->
+                <div class="mega-card">
+                    <div class="mega-icon"><i class="fas fa-paint-brush"></i></div>
+                    <h3>Éditeur de Thèmes</h3>
+                    <p>Personnalisation totale de l'interface</p>
+                    <ul class="feature-bullets">
+                        <li><i class="fas fa-palette"></i> 4 presets : Origin, Neon, Matrix, Gold</li>
+                        <li><i class="fas fa-adjust"></i> 15+ variables CSS personnalisables</li>
+                        <li><i class="fas fa-eye-dropper"></i> Couleurs, flous, bordures, polices</li>
+                        <li><i class="fas fa-random"></i> Mode "Randomize" pour inspiration</li>
+                        <li><i class="fas fa-save"></i> Sauvegarde persistante (localStorage)</li>
+                    </ul>
+                </div>
+
+                <!-- RetroArch Integration -->
+                <div class="mega-card">
+                    <div class="mega-icon"><i class="fas fa-cube"></i></div>
+                    <h3>RetroArch Manager</h3>
+                    <p>Gestion complète de RetroArch</p>
+                    <ul class="feature-bullets">
+                        <li><i class="fas fa-download"></i> Installation Stable/Nightly</li>
+                        <li><i class="fas fa-puzzle-piece"></i> Téléchargement automatique des cores</li>
+                        <li><i class="fas fa-sliders-h"></i> Configuration retroarch.cfg</li>
+                        <li><i class="fas fa-trophy"></i> Achievements (RetroAchievements)</li>
+                        <li><i class="fas fa-border-style"></i> Shaders CRT & Bezels</li>
+                        <li><i class="fas fa-gamepad"></i> Mapping manettes</li>
+                    </ul>
+                </div>
+
+                <!-- Save Manager -->
+                <div class="mega-card">
+                    <div class="mega-icon"><i class="fas fa-hdd"></i></div>
+                    <h3>Gestionnaire de Sauvegardes</h3>
+                    <p>Backup & Restore automatisés</p>
+                    <ul class="feature-bullets">
+                        <li><i class="fas fa-archive"></i> Backup complet (.zip)</li>
+                        <li><i class="fas fa-history"></i> Historique des sauvegardes</li>
+                        <li><i class="fas fa-undo"></i> Restauration en 1 clic</li>
+                        <li><i class="fas fa-trash"></i> Gestion de l'espace disque</li>
+                    </ul>
+                </div>
+
+                <!-- Gamepad Tester -->
+                <div class="mega-card">
+                    <div class="mega-icon"><i class="fas fa-gamepad"></i></div>
+                    <h3>Testeur de Manettes</h3>
+                    <p>Diagnostic en temps réel</p>
+                    <ul class="feature-bullets">
+                        <li><i class="fas fa-plug"></i> Détection automatique</li>
+                        <li><i class="fas fa-chart-line"></i> Visualisation axes/boutons</li>
+                        <li><i class="fas fa-check-circle"></i> Test de tous les inputs</li>
+                    </ul>
+                </div>
+
+                <!-- Manufacturer Manager -->
+                <div class="mega-card">
+                    <div class="mega-icon"><i class="fas fa-industry"></i></div>
+                    <h3>Gestion Constructeurs</h3>
+                    <p>Organisation par marque</p>
+                    <ul class="feature-bullets">
+                        <li><i class="fas fa-building"></i> Nintendo, Sega, Sony, etc.</li>
+                        <li><i class="fas fa-image"></i> Logos personnalisés</li>
+                        <li><i class="fas fa-filter"></i> Filtrage par constructeur</li>
+                    </ul>
+                </div>
+
+                <!-- Maintenance -->
+                <div class="mega-card">
+                    <div class="mega-icon"><i class="fas fa-wrench"></i></div>
+                    <h3>Panneau Maintenance</h3>
+                    <p>Outils système</p>
+                    <ul class="feature-bullets">
+                        <li><i class="fas fa-broom"></i> Nettoyage cache</li>
+                        <li><i class="fas fa-sync-alt"></i> Réindexation</li>
+                        <li><i class="fas fa-bug"></i> Logs de diagnostic</li>
+                    </ul>
+                </div>
+
+                <!-- Audio System -->
+                <div class="mega-card">
+                    <div class="mega-icon"><i class="fas fa-music"></i></div>
+                    <h3>Système Audio</h3>
+                    <p>Ambiance sonore immersive</p>
+                    <ul class="feature-bullets">
+                        <li><i class="fas fa-volume-up"></i> BGM : Synthwave, Chiptune, Ambient</li>
+                        <li><i class="fas fa-bell"></i> Effets sonores UI (hover, click, back)</li>
+                        <li><i class="fas fa-sliders-h"></i> Contrôle volume global</li>
+                    </ul>
+                </div>
+
+                <!-- Config Manager -->
+                <div class="mega-card">
+                    <div class="mega-icon"><i class="fas fa-file-code"></i></div>
+                    <h3>Configuration Avancée</h3>
+                    <p>Paramètres système</p>
+                    <ul class="feature-bullets">
+                        <li><i class="fas fa-key"></i> Clé API Pexels</li>
+                        <li><i class="fas fa-folder"></i> Chemins personnalisés</li>
+                        <li><i class="fas fa-save"></i> Export/Import config JSON</li>
+                    </ul>
                 </div>
             </div>
         </section>
 
-        <!-- KIOSK MODE SECTION -->
-        <section id="kiosk" class="feature-highlight left">
-            <div class="feature-visual">
-                <div class="screenshot-frame">
-                    <img src="images/kiosk.png" alt="Mode Kiosk - Borne d'arcade" class="feature-screenshot">
+        <!-- TECH STACK -->
+        <section id="tech" class="tech-section">
+            <h2>Architecture Technique</h2>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <i class="fab fa-react"></i>
+                    <h4>React 18</h4>
+                    <p>Interface moderne avec Hooks</p>
                 </div>
-            </div>
-            <div class="feature-text">
-                <h2>Mode Kiosk (Borne d'Arcade)</h2>
-                <p class="subtitle">Pour les puristes et les professionnels.</p>
-                <ul class="feature-list">
-                    <li><i class="fas fa-lock"></i> <strong>Verrouillage Total :</strong> Interface sécurisée impossible
-                        à quitter sans code.</li>
-                    <li><i class="fas fa-palette"></i> <strong>Thèmes Dynamiques :</strong> Neon, Cyberpunk, Retrowave.
-                        Changez l'ambiance en un clic.</li>
-                    <li><i class="fas fa-video"></i> <strong>Attract Mode :</strong> Économiseur d'écran vidéo
-                        automatique pour attirer les joueurs.</li>
-                </ul>
-            </div>
-        </section>
-
-        <!-- GRID FEATURES -->
-        <section id="features" class="features-grid-section">
-            <h2>Tout ce dont vous avez besoin</h2>
-            <div class="grid-3">
-                <div class="feature-card">
-                    <div class="icon-box"><i class="fas fa-tools"></i></div>
-                    <h3>Admin Panel Complet</h3>
-                    <p>Gérez vos systèmes, ajoutez des jeux, scrapez les métadonnées et configurez les émulateurs depuis
-                        une interface unifiée.</p>
+                <div class="tech-item">
+                    <i class="fas fa-bolt"></i>
+                    <h4>Electron 28</h4>
+                    <p>Application desktop native</p>
                 </div>
-                <div class="feature-card">
-                    <div class="icon-box"><i class="fas fa-bolt"></i></div>
-                    <h3>Portable & Léger</h3>
-                    <p>Aucune installation. Dézippez, jouez. Emmenez votre collection sur une clé USB n'importe où.</p>
+                <div class="tech-item">
+                    <i class="fas fa-server"></i>
+                    <h4>Express.js</h4>
+                    <p>Serveur web intégré</p>
                 </div>
-                <div class="feature-card">
-                    <div class="icon-box"><i class="fas fa-magic"></i></div>
-                    <h3>Scraper Intelligent</h3>
-                    <p>Récupération automatique des jaquettes, descriptions et vidéos via Skyscraper intégré.</p>
+                <div class="tech-item">
+                    <i class="fas fa-network-wired"></i>
+                    <h4>Bonjour mDNS</h4>
+                    <p>Découverte réseau automatique</p>
                 </div>
-                <div class="feature-card">
-                    <div class="icon-box"><i class="fas fa-music"></i></div>
-                    <h3>Ambiance Sonore</h3>
-                    <p>BGM intelligente (Synthwave, Chiptune) qui s'adapte à votre navigation. Effets sonores UI
-                        premium.</p>
+                <div class="tech-item">
+                    <i class="fas fa-microchip"></i>
+                    <h4>WebAssembly</h4>
+                    <p>Émulation navigateur (Nostalgist)</p>
                 </div>
-                <div class="feature-card">
-                    <div class="icon-box"><i class="fas fa-globe"></i></div>
-                    <h3>Serveur Local</h3>
-                    <p>Expose une API locale pour connecter des périphériques tiers ou des interfaces web distantes.</p>
+                <div class="tech-item">
+                    <i class="fas fa-database"></i>
+                    <h4>Skyscraper</h4>
+                    <p>Scraping natif C++</p>
                 </div>
-                <div class="feature-card">
-                    <div class="icon-box"><i class="fas fa-code"></i></div>
-                    <h3>Open Source</h3>
-                    <p>Construit avec amour en React + Electron. Hackez, modifiez et partagez vos améliorations.</p>
+                <div class="tech-item">
+                    <i class="fab fa-node-js"></i>
+                    <h4>Node.js</h4>
+                    <p>Backend IPC Electron</p>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-code"></i>
+                    <h4>TypeScript</h4>
+                    <p>Type-safe development</p>
                 </div>
             </div>
         </section>
 
-        <!-- DOWNLOAD CTA -->
+        <!-- SCREENSHOTS GALLERY -->
+        <section class="gallery-section">
+            <h2>Aperçu de l'Interface</h2>
+            <div class="screenshot-grid">
+                <div class="screenshot-item">
+                    <img src="images/manufacturers.png" alt="Vue Constructeurs">
+                    <div class="screenshot-label">Navigation par Constructeur</div>
+                </div>
+                <div class="screenshot-item">
+                    <img src="images/games.png" alt="Bibliothèque de jeux">
+                    <div class="screenshot-label">Bibliothèque de Jeux</div>
+                </div>
+                <div class="screenshot-item">
+                    <img src="images/webplay.png" alt="WebPlay">
+                    <div class="screenshot-label">WebPlay Mobile</div>
+                </div>
+                <div class="screenshot-item">
+                    <img src="images/kiosk.png" alt="Mode Kiosk">
+                    <div class="screenshot-label">Mode Kiosk</div>
+                </div>
+                <div class="screenshot-item">
+                    <img src="images/admin.png" alt="Admin Panel">
+                    <div class="screenshot-label">Panneau d'Administration</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DOWNLOAD -->
         <section id="download" class="download-section">
             <div class="glass-panel active-glow">
-                <h2>Commencez l'aventure</h2>
-                <div class="version-badge">Version 0.7.0 (Stable)</div>
-                <p>Compatible Windows 10/11 (x64). Inclut les cores essentiels.</p>
+                <h2>Télécharger RetroMad</h2>
+                <div class="version-badge">v0.7.0 - WebPlay & Kiosk Edition</div>
+                <p>Version portable Windows 10/11 (x64). Aucune installation requise.</p>
 
                 <div class="download-buttons">
-                    <a href="#" class="btn btn-primary btn-large">
+                    <a href="https://github.com/LordMad74/RetroMad/releases/latest" class="btn btn-primary btn-large">
                         <i class="fab fa-windows"></i> Télécharger RetroMad
                         <span class="sub-text">Portable .7z • ~85 Mo</span>
                     </a>
                 </div>
 
+                <div class="install-steps">
+                    <h4>Installation en 3 étapes :</h4>
+                    <ol>
+                        <li>Téléchargez et décompressez <code>RetroMad_V0.7.0.7z</code></li>
+                        <li>Lancez <code>Lancer_RetroMad.ps1</code> (PowerShell)</li>
+                        <li>Profitez ! 🎮</li>
+                    </ol>
+                </div>
+
                 <div class="requirements">
-                    <p><small>Requis : DirectX 9+, Visual C++ Redistributable</small></p>
+                    <p><small><strong>Requis :</strong> Windows 10/11 • DirectX 9+ • Visual C++ Redistributable</small>
+                    </p>
+                    <p><small><strong>Recommandé :</strong> 4 Go RAM • GPU compatible OpenGL 3.0+</small></p>
                 </div>
             </div>
         </section>
@@ -154,20 +327,22 @@
         <div class="footer-content">
             <div class="col">
                 <h4>RetroMad</h4>
-                <p>Le futur de l'émulation est ici.</p>
+                <p>Station d'émulation next-gen. Open Source, gratuit, sans publicité.</p>
             </div>
             <div class="col">
                 <h4>Liens</h4>
-                <a href="https://github.com/LordMad74/RetroMad">GitHub</a>
+                <a href="https://github.com/LordMad74/RetroMad">GitHub Repository</a>
+                <a href="https://github.com/LordMad74/RetroMad/releases">Releases</a>
                 <a href="https://github.com/LordMad74/RetroMad/issues">Signaler un bug</a>
             </div>
             <div class="col">
                 <h4>Légal</h4>
-                <p>Projet éducatif. Vous devez posséder les jeux originaux.</p>
+                <p>Projet éducatif. Vous devez posséder les jeux originaux pour les utiliser.</p>
+                <p>RetroArch et Skyscraper sont des projets tiers sous leurs propres licences.</p>
             </div>
         </div>
         <div class="copyright">
-            &copy; 2026 LordMad Industries.
+            &copy; 2026 LordMad Industries • Construit avec ❤️ et React
         </div>
     </footer>
 

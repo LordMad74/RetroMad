@@ -647,3 +647,258 @@ footer {
 
     /* Simplified mobile handling */
 }
+
+/* MEGA FEATURES GRID */
+.features-mega {
+    padding: 6rem 8%;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.1));
+}
+
+.features-mega h2 {
+    font-size: 3.5rem;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.section-subtitle {
+    text-align: center;
+    font-size: 1.3rem;
+    color: #888;
+    margin-bottom: 4rem;
+}
+
+.mega-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+}
+
+.mega-card {
+    background: rgba(10, 10, 10, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 2.5rem;
+    transition: all 0.3s ease;
+}
+
+.mega-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.mega-card.primary {
+    border-color: var(--primary);
+    background: linear-gradient(135deg, rgba(0, 255, 157, 0.05), rgba(0, 0, 0, 0.8));
+}
+
+.mega-card.accent {
+    border-color: var(--secondary);
+    background: linear-gradient(135deg, rgba(189, 0, 255, 0.05), rgba(0, 0, 0, 0.8));
+}
+
+.mega-icon {
+    width: 70px;
+    height: 70px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+}
+
+.mega-card.primary .mega-icon {
+    color: var(--primary);
+    background: rgba(0, 255, 157, 0.1);
+}
+
+.mega-card.accent .mega-icon {
+    color: var(--secondary);
+    background: rgba(189, 0, 255, 0.1);
+}
+
+.mega-card h3 {
+    font-size: 1.6rem;
+    margin-bottom: 0.8rem;
+    color: white;
+}
+
+.mega-card>p {
+    color: #999;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+}
+
+.feature-bullets {
+    list-style: none;
+    margin-bottom: 1.5rem;
+}
+
+.feature-bullets li {
+    padding: 0.6rem 0;
+    color: #ccc;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.feature-bullets i {
+    color: var(--primary);
+    font-size: 0.9rem;
+    width: 18px;
+}
+
+.tech-badge {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    color: #666;
+    text-align: center;
+    font-family: monospace;
+}
+
+/* TECH STACK */
+.tech-section {
+    padding: 5rem 10%;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.tech-section h2 {
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+}
+
+.tech-item {
+    text-align: center;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    transition: all 0.3s;
+}
+
+.tech-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--primary);
+}
+
+.tech-item i {
+    font-size: 3rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.tech-item h4 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.tech-item p {
+    font-size: 0.9rem;
+    color: #888;
+    margin: 0;
+}
+
+/* GALLERY */
+.gallery-section {
+    padding: 5rem 8%;
+}
+
+.gallery-section h2 {
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.screenshot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+}
+
+.screenshot-item {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s;
+}
+
+.screenshot-item:hover {
+    transform: scale(1.03);
+    border-color: var(--primary);
+}
+
+.screenshot-item img {
+    width: 100%;
+    display: block;
+}
+
+.screenshot-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+    padding: 1.5rem 1rem 1rem;
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+/* DOWNLOAD ENHANCEMENTS */
+.install-steps {
+    margin-top: 2rem;
+    text-align: left;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.install-steps h4 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.install-steps ol {
+    padding-left: 1.5rem;
+}
+
+.install-steps li {
+    padding: 0.5rem 0;
+    color: #ccc;
+}
+
+.install-steps code {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: monospace;
+    color: var(--primary);
+}
+
+.requirements {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.requirements p {
+    margin: 0.5rem 0;
+    font-size: 0.85rem;
+}
