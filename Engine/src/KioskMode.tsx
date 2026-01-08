@@ -332,23 +332,46 @@ export default function KioskMode({ config, onExit }: { config: any, onExit: () 
                                     return (
                                         <div style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                             {logoUrl && (
-                                                <img
-                                                    src={logoUrl}
-                                                    style={{
-                                                        position: 'absolute',
-                                                        top: 0,
-                                                        left: 0,
-                                                        width: '100%',
-                                                        height: '100%',
-                                                        objectFit: 'cover',
-                                                        transform: 'scale(1.2)',
-                                                        filter: isCenter ? 'brightness(1.1)' : 'grayscale(80%) brightness(0.6)',
-                                                        transition: 'filter 0.5s',
-                                                        zIndex: 0,
-                                                        WebkitMaskImage: 'radial-gradient(ellipse 88% 82% at center, black 55%, transparent 100%)',
-                                                        maskImage: 'radial-gradient(ellipse 88% 82% at center, black 55%, transparent 100%)'
-                                                    }}
-                                                />
+                                                <>
+                                                    {/* Glow layer */}
+                                                    {isCenter && (
+                                                        <img
+                                                            src={logoUrl}
+                                                            style={{
+                                                                position: 'absolute',
+                                                                top: '-10%',
+                                                                left: '-10%',
+                                                                width: '120%',
+                                                                height: '120%',
+                                                                objectFit: 'cover',
+                                                                transform: 'scale(1.3)',
+                                                                filter: `blur(25px) brightness(1.6) saturate(2.5)`,
+                                                                opacity: 0.5,
+                                                                zIndex: -1
+                                                            }}
+                                                        />
+                                                    )}
+                                                    {/* Main image */}
+                                                    <img
+                                                        src={logoUrl}
+                                                        style={{
+                                                            position: 'absolute',
+                                                            top: 0,
+                                                            left: 0,
+                                                            width: '100%',
+                                                            height: '100%',
+                                                            objectFit: 'cover',
+                                                            transform: 'scale(1.2)',
+                                                            filter: isCenter
+                                                                ? `brightness(1.3) contrast(1.2) saturate(1.5) drop-shadow(0 0 25px ${theme.accent}99)`
+                                                                : 'grayscale(80%) brightness(0.6)',
+                                                            transition: 'filter 0.5s',
+                                                            zIndex: 0,
+                                                            WebkitMaskImage: 'radial-gradient(ellipse 88% 82% at center, black 55%, transparent 100%)',
+                                                            maskImage: 'radial-gradient(ellipse 88% 82% at center, black 55%, transparent 100%)'
+                                                        }}
+                                                    />
+                                                </>
                                             )}
                                             <div style={{ position: 'absolute', bottom: '-1px', left: '-1px', width: '100.5%', padding: '10vmin 0 2vmin 0', zIndex: 1, display: 'flex', justifyContent: 'center', alignItems: 'flex-end', background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 100%)', borderRadius: '0 0 20px 20px' }}>
                                                 <div style={{ fontSize: isCenter ? '4vmin' : '2.5vmin', color: 'white', textShadow: `0 0 20px ${theme.accent}, 0 0 5px black`, fontWeight: 'bold', fontFamily: theme.font, textAlign: 'center', letterSpacing: '0.5vmin' }}>{sys.name.toUpperCase()}</div>
@@ -528,21 +551,41 @@ export default function KioskMode({ config, onExit }: { config: any, onExit: () 
                                 style={{ position: 'absolute', width: isCenter ? '44vmin' : '28vmin', height: isCenter ? '33vmin' : '21vmin', background: isCenter ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0,0,0,0.5)', border: `2px solid ${isCenter ? theme.accent : '#333'}`, borderRadius: '20px', overflow: 'hidden', boxShadow: isCenter ? `0 0 80px ${theme.accent}66, inset 0 0 150px ${theme.accent}aa` : 'none', backdropFilter: 'blur(5px)', fontSize: '1vmin' }}>
                                 <div style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
                                     {man.logo ? (
-                                        <img
-                                            src={man.logo}
-                                            style={{
-                                                position: 'absolute',
-                                                top: 0,
-                                                left: 0,
-                                                width: '100%',
-                                                height: '100%',
-                                                objectFit: 'cover',
-                                                objectPosition: 'center',
-                                                filter: 'drop-shadow(0 0 10px rgba(0,0,0,0.5))',
-                                                WebkitMaskImage: 'radial-gradient(ellipse 90% 85% at center, black 60%, transparent 100%)',
-                                                maskImage: 'radial-gradient(ellipse 90% 85% at center, black 60%, transparent 100%)'
-                                            }}
-                                        />
+                                        <>
+                                            {/* Glow layer behind */}
+                                            <img
+                                                src={man.logo}
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: '-10%',
+                                                    left: '-10%',
+                                                    width: '120%',
+                                                    height: '120%',
+                                                    objectFit: 'cover',
+                                                    objectPosition: 'center',
+                                                    filter: `blur(20px) brightness(1.5) saturate(2)`,
+                                                    opacity: 0.6,
+                                                    zIndex: 0
+                                                }}
+                                            />
+                                            {/* Main image */}
+                                            <img
+                                                src={man.logo}
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: 0,
+                                                    left: 0,
+                                                    width: '100%',
+                                                    height: '100%',
+                                                    objectFit: 'cover',
+                                                    objectPosition: 'center',
+                                                    filter: `brightness(1.2) contrast(1.3) saturate(1.4) drop-shadow(0 0 20px ${theme.accent}88)`,
+                                                    WebkitMaskImage: 'radial-gradient(ellipse 90% 85% at center, black 60%, transparent 100%)',
+                                                    maskImage: 'radial-gradient(ellipse 90% 85% at center, black 60%, transparent 100%)',
+                                                    zIndex: 1
+                                                }}
+                                            />
+                                        </>
                                     ) : (
                                         <h2 style={{ color: 'white' }}>{man.name}</h2>
                                     )}
