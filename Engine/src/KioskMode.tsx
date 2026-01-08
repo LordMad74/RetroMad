@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from './contexts/LanguageContext';
 import KioskBackground from './KioskBackground';
+
 
 // Themes definitions
 const THEMES = {
@@ -25,7 +27,9 @@ const THEMES = {
 };
 
 export default function KioskMode({ config, onExit }: { config: any, onExit: () => void }) {
+    const { t } = useTranslation();
     const themeName = config.theme || 'neon_arcade';
+
     const backgroundEffect = config.effect || 'none';
     const [allSystems, setAllSystems] = useState<any[]>([]);
     const [systems, setSystems] = useState<any[]>([]);
@@ -419,18 +423,33 @@ export default function KioskMode({ config, onExit }: { config: any, onExit: () 
                     </motion.div>
                 </AnimatePresence>
 
-                {/* VIDEO LAYER - FADE IN */}
+                {/* VIDEO LAYER - CINEMATIC FOCUS */}
                 {currentGame.video && (
                     <motion.div
                         initial={{ opacity: 0 }}
-                        animate={{ opacity: showVideo || isIdle ? 1 : 0 }}
-                        transition={{ duration: 1 }}
+                        animate={{
+                            opacity: showVideo || isIdle ? 1 : 0,
+                            scale: isIdle ? 1.05 : (showVideo ? 1.02 : 1)
+                        }}
+                        transition={{ duration: 1.5 }}
                         style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 2, pointerEvents: 'none' }}
                     >
-                        {/* If idle, remove mute to attract ? No, keep silent or user preference */}
-                        <video src={`media://${currentGame.video}`} autoPlay loop muted style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: isIdle ? 1 : 0.4 }} />
+                        <video
+                            src={`media://${currentGame.video}`}
+                            autoPlay
+                            loop
+                            muted
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover',
+                                opacity: isIdle ? 1 : (showVideo ? 0.6 : 0),
+                                filter: isIdle ? 'none' : 'brightness(0.8)'
+                            }}
+                        />
                     </motion.div>
                 )}
+
 
                 <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 5, background: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))', backgroundSize: '100% 2px, 3px 100%', pointerEvents: 'none' }} />
 
@@ -508,14 +527,14 @@ export default function KioskMode({ config, onExit }: { config: any, onExit: () 
 
                 {isIdle && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ position: 'absolute', bottom: '50px', width: '100%', textAlign: 'center', zIndex: 50, color: theme.accent, textShadow: '0 0 10px black' }}>
-                        <h2>ATTRACT MODE</h2>
-                        <p>Appuyez sur une touche pour reprendre</p>
+                        <h2 style={{ fontFamily: theme.font, letterSpacing: '4px' }}>{t('kiosk.attract_mode')}</h2>
+                        <p>{t('kiosk.resume_hint')}</p>
                     </motion.div>
                 )}
 
-                <div style={{ position: 'absolute', bottom: '20px', left: '20px', zIndex: 20, opacity: 0.7 }}>
+                <div style={{ position: 'absolute', bottom: '20px', left: '20px', zIndex: 20, opacity: isIdle ? 0 : 0.7 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                        <kbd style={{ background: '#fff', color: '#000', padding: '2px 6px', borderRadius: '4px', fontWeight: 'bold' }}>ENTER</kbd> Jouer | Sortie: Ctrl+Shift+Q
+                        <kbd style={{ background: '#fff', color: '#000', padding: '2px 6px', borderRadius: '4px', fontWeight: 'bold' }}>ENTER</kbd> {t('kiosk.exit_hint')}
                     </div>
                 </div>
             </div>

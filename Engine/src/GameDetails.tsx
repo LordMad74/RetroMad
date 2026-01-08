@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Play, Globe, ArrowLeft, Calendar, User, Trash2, Gamepad2, Users, Star } from 'lucide-react';
+import { Play, Globe, ArrowLeft, Calendar, User, Trash2, Gamepad2, Users, Star, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from './contexts/LanguageContext';
 
 interface Game {
     id: string;
@@ -29,11 +30,25 @@ export default function GameDetails({ game, onBack, onLaunchNative, onLaunchWeb,
     onLaunchWeb: (game: Game) => void,
     onDelete: (game: Game) => void
 }) {
+    const { t } = useTranslation();
     const cleanName = (name: string) => {
         return name.replace(/\s*[\(\[][^\)\]]*[\)\]]/g, '').trim();
     };
 
     const [previewMedia, setPreviewMedia] = useState<{ url: string, type: 'image' | 'video' } | null>(null);
+    const [generatingAI, setGeneratingAI] = useState(false);
+    const [desc, setDesc] = useState(game.description || t('kiosk.no_description'));
+
+    const generateAI = async () => {
+        setGeneratingAI(true);
+        try {
+            const systemId = (window as any).currentGameSystem || 'unknown';
+            const result = await (window as any).electronAPI.dbGenerateAiDescription({ gameName: game.name, system: systemId });
+            setDesc(result.description);
+        } catch (e) { console.error(e); }
+        setGeneratingAI(false);
+    };
+
 
     return (
         <motion.div
@@ -123,7 +138,7 @@ export default function GameDetails({ game, onBack, onLaunchNative, onLaunchWeb,
                             display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold', fontSize: '0.85em'
                         }}
                     >
-                        <Trash2 size={16} /> SUPPRIMER
+                        <Trash2 size={16} /> {t('common.delete')}
                     </button>
                 </div>
 
@@ -181,12 +196,12 @@ export default function GameDetails({ game, onBack, onLaunchNative, onLaunchWeb,
                                 {cleanName(game.name)}
                             </h1>
                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '15px', marginTop: '12px', color: 'rgba(255,255,255,0.5)', fontWeight: 'bold', fontSize: '0.9em' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }} title="Sortie"><Calendar size={16} color="var(--accent-color)" /> {game.releaseDate?.substring(0, 4) || 'N/A'}</div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }} title="Développeur"><User size={16} color="var(--accent-color)" /> {game.developer || 'Inconnu'}</div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }} title="Genre"><Gamepad2 size={16} color="var(--accent-color)" /> {game.genre || 'Inconnu'}</div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }} title="Joueurs"><Users size={16} color="var(--accent-color)" /> {game.players || '1'} P</div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }} title={t('common.release_date')}><Calendar size={16} color="var(--accent-color)" /> {game.releaseDate?.substring(0, 4) || t('common.na')}</div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }} title={t('common.developer')}><User size={16} color="var(--accent-color)" /> {game.developer || t('common.unknown')}</div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }} title={t('common.genre')}><Gamepad2 size={16} color="var(--accent-color)" /> {game.genre || t('common.unknown')}</div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }} title={t('common.players')}><Users size={16} color="var(--accent-color)" /> {game.players || '1'} {t('common.players_short')}</div>
                                 {game.rating && (
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#fbbf24' }} title="Note">
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#fbbf24' }} title={t('common.rating')}>
                                         <Star size={16} fill="#fbbf24" /> {Math.round(parseFloat(game.rating.toString()) * 100)}%
                                     </div>
                                 )}
@@ -194,18 +209,32 @@ export default function GameDetails({ game, onBack, onLaunchNative, onLaunchWeb,
                         </div>
 
                         {/* Description */}
-                        <div style={{
-                            fontSize: '1em',
-                            lineHeight: '1.5',
-                            color: 'rgba(255,255,255,0.7)',
-                            background: 'rgba(255,255,255,0.02)',
-                            padding: '20px',
-                            borderRadius: '12px',
-                            border: '1px solid rgba(255,255,255,0.05)',
-                            maxHeight: '200px',
-                            overflowY: 'auto'
-                        }}>
-                            {game.description || "Aucune description disponible pour ce jeu."}
+                        <div style={{ position: 'relative' }}>
+                            <div style={{
+                                fontSize: '1em',
+                                lineHeight: '1.5',
+                                color: 'rgba(255,255,255,0.7)',
+                                background: 'rgba(255,255,255,0.02)',
+                                padding: '20px',
+                                borderRadius: '12px',
+                                border: '1px solid rgba(255,255,255,0.05)',
+                                maxHeight: '200px',
+                                overflowY: 'auto'
+                            }}>
+                                {generatingAI ? t('common.loading') : desc}
+                            </div>
+                            <button
+                                onClick={generateAI}
+                                disabled={generatingAI}
+                                style={{
+                                    position: 'absolute', top: '10px', right: '10px',
+                                    background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '8px',
+                                    padding: '5px 10px', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px',
+                                    fontSize: '0.7em', fontWeight: 'bold'
+                                }}
+                            >
+                                <Sparkles size={14} color="#fcd34d" /> AI DESC
+                            </button>
                         </div>
 
                         {/* Actions */}

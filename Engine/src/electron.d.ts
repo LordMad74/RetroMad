@@ -73,6 +73,9 @@ export interface ElectronAPI {
 
     // Remote Actions
     onRemoteAction: (callback: (data: { type: string, value?: any, key?: string }) => void) => () => void;
+
+    // Lifecycle
+    quitApp: () => void;
 }
 
 declare global {

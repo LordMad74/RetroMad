@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Settings, Save, Monitor, Palette, Download, Trophy, User } from 'lucide-react';
+import { Settings, Save, Monitor, Palette, Download } from 'lucide-react';
 
 const SYSTEMS = [
     { id: 'global', name: 'Global (Tous les systèmes)' },
@@ -299,32 +299,7 @@ export default function ConfigPanel() {
                         </button>
                     </div>
 
-                    {/* RetroAchievements */}
-                    <div className="glass-panel" style={{ padding: '20px', borderRadius: '12px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}>
-                            <Trophy size={24} color="#f59e0b" />
-                            <h3 style={{ margin: 0 }}>RetroAchievements</h3>
-                        </div>
-                        <div style={{ display: 'flex', gap: '10px' }}>
-                            <div style={{ position: 'relative', flex: 1 }}>
-                                <User size={16} style={{ position: 'absolute', left: '12px', top: '14px', color: '#999' }} />
-                                <input
-                                    type="text"
-                                    placeholder="Nom d'utilisateur"
-                                    value={raUsername}
-                                    onChange={e => setRaUsername(e.target.value)}
-                                    style={{
-                                        width: '100%',
-                                        padding: '12px 12px 12px 40px',
-                                        background: 'rgba(0,0,0,0.3)',
-                                        border: '1px solid var(--glass-border)',
-                                        borderRadius: '8px',
-                                        color: 'white'
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    </div>
+
 
                 </div>
             </div>

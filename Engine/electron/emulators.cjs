@@ -5,6 +5,7 @@ const { app } = require('electron');
 const { spawn } = require('child_process');
 const sevenBin = require('7zip-bin');
 const { extractFull } = require('node-7z');
+const configManager = require('./config.cjs');
 
 // Helper to get Content path
 const getEmulatorsPath = () => {
@@ -153,6 +154,23 @@ const CORES = {
     'colecovision': [
         { id: 'gearcoleco', name: 'Gearcoleco', lib: 'gearcoleco_libretro.dll', url: "https://buildbot.libretro.com/nightly/windows/x86_64/latest/gearcoleco_libretro.dll.zip" }
     ]
+};
+
+const BEZEL_MAP = {
+    'nes': 'nes-smb2-integer.cfg',
+    'nintendo': 'nes-smb2-integer.cfg',
+    'snes': 'snes-lttp.cfg',
+    'super-nintendo': 'snes-lttp.cfg',
+    'supernintendo': 'snes-lttp.cfg',
+    'megadrive': 'tv-integer.cfg',
+    'genesis': 'tv-integer.cfg',
+    'gba': 'gba-4k.cfg',
+    'gb': 'gb.cfg',
+    'psx': 'tv-integer.cfg',
+    'playstation': 'tv-integer.cfg',
+    'n64': 'tv-integer.cfg',
+    'mame': 'tv-integer.cfg',
+    'arcade': 'tv-integer.cfg'
 };
 
 const EXTENSIONS = {
@@ -592,6 +610,37 @@ class EmulatorManager {
 
         const args = ['-L', corePath, gameReturn.path];
         if (fullscreen) args.push('-f');
+
+        // AUTO-BEZEL LOGIC (Using main configManager)
+        const appConfig = configManager.get();
+        const autoBezel = appConfig.retroarch?.auto_bezel === true;
+        if (autoBezel) {
+            const bezelFile = BEZEL_MAP[system.toLowerCase()];
+            if (bezelFile) {
+                const bezelRelPath = `overlays/borders/${bezelFile}`;
+                if (fs.existsSync(path.join(raPath, bezelRelPath))) {
+                    // Create temp config for overlay with ABSOLUTE PATH
+                    const tempCfgPath = path.join(raPath, 'temp_bezel.cfg');
+                    const absBezelPath = path.join(raPath, bezelRelPath).replace(/\\/g, '/');
+                    const bezelCfgContent = [
+                        `input_overlay_enable = "true"`,
+                        `input_overlay = "${absBezelPath}"`,
+                        `input_overlay_hide_in_menu = "false"`,
+                        `input_overlay_opacity = "1.000000"`,
+                        `input_overlay_scale = "1.000000"`,
+                    ].join('\n');
+
+                    fs.writeFileSync(tempCfgPath, bezelCfgContent, 'utf8');
+                    // Put appendconfig at the BEGINNING of args to be sure it's taken into account
+                    args.unshift('--appendconfig', tempCfgPath);
+                    console.log(`[BEZEL] Auto-Bezel triggered for ${system}: ${absBezelPath}`);
+                } else {
+                    console.warn(`[BEZEL] File not found: ${path.join(raPath, bezelRelPath)}`);
+                }
+            } else {
+                console.log(`[BEZEL] No mapping for system: ${system}`);
+            }
+        }
 
         console.log("Launching:", exe, args);
         try {

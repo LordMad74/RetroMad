@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Settings, Cpu, HardDrive, Download, Monitor, Factory, ChevronRight, X, Save, ShieldAlert, Activity, RefreshCw, Zap, Gamepad } from 'lucide-react';
+import { Settings, Cpu, Download, Factory, X, Save, ShieldAlert, Activity, RefreshCw, Zap, Gamepad, Palette, LayoutGrid, HardDrive, Monitor } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ConfigPanel from './ConfigPanel';
 import SystemManager from './SystemManager';
@@ -10,13 +10,15 @@ import Dashboard from './Dashboard';
 import GamepadTester from './GamepadTester';
 import SaveManager from './SaveManager';
 import ThemeEditor from './ThemeEditor';
-import { Palette } from 'lucide-react';
+import RetroArchSettings from './RetroArchSettings';
+import KioskSettings from './KioskSettings';
+import EmulatorStore from './EmulatorStore';
 
 export default function AdminPanel() {
     const [status, setStatus] = useState<{ retroarch: boolean } | null>(null);
     const [installing, setInstalling] = useState(false);
     const [progress, setProgress] = useState({ message: '', percent: 0 });
-    const [activeTab, setActiveTab] = useState<'dashboard' | 'systems' | 'scraper' | 'config' | 'emulator' | 'kiosk' | 'manufacturers' | 'maintenance' | 'gamepad' | 'saves' | 'design'>('dashboard');
+    const [activeTab, setActiveTab] = useState<'dashboard' | 'systems' | 'scraper' | 'config' | 'emulator' | 'retroarch' | 'kiosk' | 'manufacturers' | 'maintenance' | 'gamepad' | 'saves' | 'design'>('dashboard');
     const [kioskConfig, setKioskConfig] = useState({ enabled: false, theme: 'neon_arcade', effect: 'none' });
     const [pexelsKey, setPexelsKey] = useState('');
     const [selectedSection, setSelectedSection] = useState('');
@@ -132,58 +134,73 @@ export default function AdminPanel() {
     };
 
     const tabs = [
-        { id: 'dashboard', label: 'Dashboard', icon: <Activity size={20} />, desc: 'Vue d\'ensemble' },
-        { id: 'systems', label: 'Systèmes', icon: <Cpu size={20} />, desc: 'Gérer les consoles et chemins' },
-        { id: 'manufacturers', label: 'Constructeurs', icon: <Factory size={20} />, desc: 'Marques et logos' },
-        { id: 'maintenance', label: 'Maintenance', icon: <ShieldAlert size={20} />, desc: 'Nettoyage et Outils' },
-        { id: 'scraper', label: 'Scraper', icon: <Download size={20} />, desc: 'Télécharger les médias' },
-        { id: 'kiosk', label: 'Mode Kiosk', icon: <Monitor size={20} />, desc: 'Interface Bornes d\'Arcade' },
-        { id: 'config', label: 'Préférences', icon: <Settings size={20} />, desc: 'Options générales' },
-        { id: 'emulator', label: 'Émulateurs', icon: <HardDrive size={20} />, desc: 'Gestion des cœurs' },
-        { id: 'gamepad', label: 'Contrôleurs', icon: <Gamepad size={20} />, desc: 'Tester vos manettes' },
-        { id: 'saves', label: 'Sauvegardes', icon: <Save size={20} />, desc: 'Backup & Cloud' },
-        { id: 'design', label: 'Design', icon: <Palette size={20} />, desc: 'Personnaliser l\'interface' },
+        // GÉNERAL
+        { id: 'dashboard', label: 'Dashboard', icon: <Activity size={20} />, desc: 'Vue d\'ensemble', category: 'Général' },
+        { id: 'config', label: 'Préférences', icon: <Settings size={20} />, desc: 'Options générales', category: 'Général' },
+
+        // BIBLIOTHÈQUE
+        { id: 'systems', label: 'Systèmes', icon: <Cpu size={20} />, desc: 'Gérer les consoles', category: 'Bibliothèque' },
+        { id: 'manufacturers', label: 'Constructeurs', icon: <Factory size={20} />, desc: 'Marques et logos', category: 'Bibliothèque' },
+        { id: 'scraper', label: 'Scraper', icon: <Download size={20} />, desc: 'Récupérer les médias', category: 'Bibliothèque' },
+
+        // ÉMULATION
+        { id: 'emulator', label: 'Emulateurs', icon: <HardDrive size={20} />, desc: 'Gestion des moteurs', category: 'Émulation' },
+        { id: 'retroarch', label: 'RetroArch+', icon: <Zap size={20} />, desc: 'Shaders & Succès', category: 'Émulation' },
+        { id: 'saves', label: 'Sauvegardes', icon: <Save size={20} />, desc: 'Backup & Cloud', category: 'Émulation' },
+
+        // INTERFACE
+        { id: 'kiosk', label: 'Mode Kiosk', icon: <Monitor size={20} />, desc: 'Bornes d\'Arcade', category: 'Interface' },
+        { id: 'design', label: 'Design UI', icon: <Palette size={20} />, desc: 'Look de l\'app', category: 'Interface' },
+
+        // OUTILS
+        { id: 'gamepad', label: 'Contrôleurs', icon: <Gamepad size={20} />, desc: 'Test manettes', category: 'Outils' },
+        { id: 'maintenance', label: 'Maintenance', icon: <ShieldAlert size={20} />, desc: 'Nettoyage & Logs', category: 'Outils' },
     ];
+
+    const categories = ['Général', 'Bibliothèque', 'Émulation', 'Interface', 'Outils'];
 
     return (
         <div style={{ display: 'flex', height: '100%', gap: '30px', fontFamily: '"Inter", sans-serif' }}>
             {/* SIDEBAR NAVIGATION */}
             <div style={{ width: '260px', display: 'flex', flexDirection: 'column', gap: '10px', paddingRight: '10px' }}>
-                <div style={{ marginBottom: '20px', padding: '0 10px' }}>
-                    <h2 style={{ fontSize: '1.2em', opacity: 0.7, margin: 0, textTransform: 'uppercase', letterSpacing: '1px' }}>Menu Admin</h2>
+                <div style={{ marginBottom: '25px', display: 'flex', alignItems: 'center', gap: '10px', padding: '0 10px' }}>
+                    <LayoutGrid size={24} color="var(--accent-color)" />
+                    <h2 style={{ fontSize: '1.4em', fontWeight: '800', margin: 0, letterSpacing: '-0.5px' }}>AD<span style={{ color: 'var(--accent-color)' }}>MIN</span></h2>
                 </div>
 
-                {tabs.map(tab => (
-                    <motion.button
-                        key={tab.id}
-                        onClick={() => setActiveTab(tab.id as any)}
-                        whileHover={{ x: 5, backgroundColor: 'rgba(255,255,255,0.05)' }}
-                        whileTap={{ scale: 0.98 }}
-                        style={{
-                            display: 'flex', alignItems: 'center', gap: '15px', padding: '16px 20px',
-                            background: activeTab === tab.id ? 'linear-gradient(90deg, var(--accent-color), transparent)' : 'transparent',
-                            border: 'none', borderRadius: '12px', cursor: 'pointer', textAlign: 'left', position: 'relative', overflow: 'hidden',
-                            borderLeft: activeTab === tab.id ? '4px solid white' : '4px solid transparent', transition: 'border 0.3s'
-                        }}
-                    >
-                        <div style={{ color: activeTab === tab.id ? 'white' : '#888', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            {tab.icon}
+                <div style={{ flex: 1, overflowY: 'auto', paddingRight: '5px' }}>
+                    {categories.map(cat => (
+                        <div key={cat} style={{ marginBottom: '20px' }}>
+                            <div style={{ fontSize: '0.65em', fontWeight: 'bold', color: '#666', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '10px', paddingLeft: '15px' }}>
+                                {cat}
+                            </div>
+                            {tabs.filter(t => t.category === cat).map(tab => (
+                                <motion.button
+                                    key={tab.id}
+                                    onClick={() => setActiveTab(tab.id as any)}
+                                    whileHover={{ x: 4, backgroundColor: 'rgba(255,255,255,0.03)' }}
+                                    whileTap={{ scale: 0.98 }}
+                                    style={{
+                                        width: '100%', display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 15px',
+                                        background: activeTab === tab.id ? 'rgba(255, 45, 85, 0.1)' : 'transparent',
+                                        border: 'none', borderRadius: '10px', cursor: 'pointer', textAlign: 'left', position: 'relative',
+                                        marginBottom: '2px'
+                                    }}
+                                >
+                                    <div style={{ color: activeTab === tab.id ? 'var(--accent-color)' : '#666', display: 'flex', alignItems: 'center' }}>
+                                        {tab.icon}
+                                    </div>
+                                    <span style={{ color: activeTab === tab.id ? 'white' : '#999', fontWeight: activeTab === tab.id ? '600' : '400', fontSize: '0.9em' }}>
+                                        {tab.label}
+                                    </span>
+                                    {activeTab === tab.id && (
+                                        <motion.div layoutId="active-nav" style={{ position: 'absolute', left: 0, width: '3px', height: '20px', background: 'var(--accent-color)', borderRadius: '0 4px 4px 0' }} />
+                                    )}
+                                </motion.button>
+                            ))}
                         </div>
-                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            <span style={{ color: activeTab === tab.id ? 'white' : '#aaa', fontWeight: activeTab === tab.id ? 'bold' : 'normal', fontSize: '1em' }}>
-                                {tab.label}
-                            </span>
-                            <span style={{ fontSize: '0.75em', color: activeTab === tab.id ? 'rgba(255,255,255,0.7)' : '#666' }}>
-                                {tab.desc}
-                            </span>
-                        </div>
-                        {activeTab === tab.id && (
-                            <motion.div layoutId="active-dot" style={{ position: 'absolute', right: '15px', opacity: 0.5 }}>
-                                <ChevronRight size={16} color="white" />
-                            </motion.div>
-                        )}
-                    </motion.button>
-                ))}
+                    ))}
+                </div>
 
                 <div style={{ marginTop: 'auto', padding: '20px', background: 'rgba(0,0,0,0.2)', borderRadius: '12px' }}>
                     <div style={{ fontSize: '0.8em', color: '#666', marginBottom: '5px' }}>ÉTAT DU SYSTÈME</div>
@@ -246,239 +263,31 @@ export default function AdminPanel() {
                             {activeTab === 'maintenance' && <MaintenancePanel />}
                             {activeTab === 'gamepad' && <GamepadTester />}
                             {activeTab === 'saves' && <SaveManager />}
+                            {activeTab === 'retroarch' && <RetroArchSettings />}
                             {activeTab === 'design' && <ThemeEditor />}
 
                             {activeTab === 'kiosk' && (
-                                <div style={{ background: 'var(--bg-secondary)', padding: '30px', borderRadius: '16px', border: '1px solid var(--glass-border)' }}>
-                                    <h3 style={{ marginTop: 0 }}>Configuration Expérience Kiosk</h3>
-                                    <p style={{ color: '#aaa', fontSize: '0.95em', marginBottom: '30px', lineHeight: '1.5' }}>
-                                        Personnalisez l'apparence et le comportement du mode plein écran (Arcade).
-                                        C'est ici que vous définissez l'ambiance visuelle de votre borne.
-                                    </p>
-
-                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
-                                        <div style={{ background: 'rgba(0,0,0,0.2)', padding: '25px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px' }}>
-                                                <label style={{ fontSize: '1.1em', fontWeight: 'bold' }}>Démarrage Automatique</label>
-                                                <input
-                                                    type="checkbox"
-                                                    checked={kioskConfig.enabled}
-                                                    onChange={e => handleConfigChange('enabled', e.target.checked)}
-                                                    style={{ width: '20px', height: '20px', accentColor: 'var(--accent-color)' }}
-                                                />
-                                            </div>
-                                            <p style={{ fontSize: '0.85em', color: '#888' }}>
-                                                Si activé, l'application se lancera directement en mode Kiosk, sans passer par le bureau. Idéal pour une borne dédiée.
-                                            </p>
-                                        </div>
-
-                                        <div style={{ background: 'rgba(0,0,0,0.2)', padding: '25px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', gridColumn: '1 / -1' }}>
-                                            <label style={{ display: 'block', marginBottom: '20px', fontWeight: 'bold', fontSize: '1.2em' }}>Galerie de Thèmes (Interface Arcade)</label>
-                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
-                                                {[
-                                                    { id: 'neon_arcade', name: 'Neon Arcade', desc: 'Style 80s Synthwave', img: 'media://media/images/themes/neon_arcade.png' },
-                                                    { id: 'classic_cabinet', name: 'Classic Cabinet', desc: 'Rétro Bois Noir', img: 'media://media/images/themes/retro_wood.png' },
-                                                    { id: 'future_glass', name: 'Future Glass', desc: 'Modern Minimalist', img: 'media://media/images/themes/future_glass.png' },
-                                                    { id: 'cyber_grid', name: 'Cyber Grid', desc: 'High-Tech Blueprint', img: 'media://media/images/themes/cyber_grid.png' },
-                                                ].map(theme => (
-                                                    <motion.div
-                                                        key={theme.id}
-                                                        whileHover={{ scale: 1.02 }}
-                                                        onClick={() => handleConfigChange('theme', theme.id)}
-                                                        style={{
-                                                            cursor: 'pointer',
-                                                            borderRadius: '12px',
-                                                            overflow: 'hidden',
-                                                            border: kioskConfig.theme === theme.id ? '2px solid var(--accent-color)' : '2px solid transparent',
-                                                            background: 'rgba(255,255,255,0.02)',
-                                                            boxShadow: kioskConfig.theme === theme.id ? '0 0 15px rgba(255, 45, 85, 0.3)' : 'none'
-                                                        }}
-                                                    >
-                                                        <img src={theme.img} alt={theme.name} style={{ width: '100%', height: '120px', objectFit: 'cover', opacity: kioskConfig.theme === theme.id ? 1 : 0.6 }} />
-                                                        <div style={{ padding: '12px' }}>
-                                                            <div style={{ fontWeight: 'bold', fontSize: '0.9em', color: kioskConfig.theme === theme.id ? 'var(--accent-color)' : 'white' }}>{theme.name}</div>
-                                                            <div style={{ fontSize: '0.7em', color: '#666' }}>{theme.desc}</div>
-                                                        </div>
-                                                    </motion.div>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        <div style={{ background: 'rgba(0,0,0,0.2)', padding: '25px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                            <label style={{ display: 'block', marginBottom: '15px', fontWeight: 'bold' }}>Ambiance de Fond</label>
-                                            <select
-                                                value={(kioskConfig as any).effect || 'none'}
-                                                onChange={e => handleConfigChange('effect', e.target.value)}
-                                                style={{ width: '100%', padding: '12px', background: 'rgba(0,0,0,0.4)', border: '1px solid #444', color: 'white', borderRadius: '8px', outline: 'none' }}
-                                            >
-                                                <option value="none">Aucun (Simple)</option>
-                                                <option value="stars">Voyage Spatial (Vitesse Lumière)</option>
-                                                <option value="nebula">Nébuleuse Cosmique (Fumée)</option>
-                                                <option value="grid">Grille Rétro 80's (Synthwave)</option>
-                                                <option value="hexagons">Ruche Cyber (Hexagones)</option>
-                                                <option value="particles">Particules Zen (Orbes)</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div style={{ marginTop: '30px', padding: '25px', background: 'rgba(50, 50, 60, 0.3)', border: '1px dashed rgba(255, 255, 255, 0.2)', borderRadius: '12px' }}>
-                                        <h4 style={{ margin: '0 0 15px 0', fontSize: '1.1em' }}><Download size={16} style={{ display: 'inline', marginRight: '8px' }} />Fonds d'écran Dynamiques (API Pexels)</h4>
-                                        <div style={{ display: 'flex', gap: '15px' }}>
-                                            <input
-                                                type="password"
-                                                value={pexelsKey}
-                                                onChange={(e) => setPexelsKey(e.target.value)}
-                                                placeholder="Entrez votre clé API Pexels ici..."
-                                                style={{ flex: 1, padding: '12px', borderRadius: '8px', border: '1px solid #444', background: 'rgba(0,0,0,0.3)', color: 'white', fontFamily: 'monospace' }}
-                                            />
-                                            <button
-                                                onClick={savePexelsKey}
-                                                style={{ padding: '12px 25px', background: 'var(--accent-color)', color: 'black', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', textTransform: 'uppercase' }}
-                                            >
-                                                Enregistrer
-                                            </button>
-                                        </div>
-                                        <p style={{ fontSize: '0.85em', color: '#888', marginTop: '10px' }}>
-                                            Nécessaire pour le téléchargement automatique de vidéos d'ambiance de haute qualité si aucun média n'est trouvé pour un jeu.
-                                        </p>
-                                    </div>
-
-                                    <div style={{ marginTop: '30px', textAlign: 'right' }}>
-                                        <button
-                                            onClick={() => window.location.reload()}
-                                            style={{ padding: '15px 30px', background: 'transparent', color: 'var(--accent-color)', border: '1px solid var(--accent-color)', borderRadius: '30px', cursor: 'pointer', fontWeight: 'bold', transition: 'all 0.2s' }}
-                                            onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-color)'; e.currentTarget.style.color = 'black'; }}
-                                            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--accent-color)'; }}
-                                        >
-                                            <span style={{ marginRight: '10px' }}>🔄</span> APPLIQUER LES CHANGEMENTS
-                                        </button>
-                                    </div>
-                                </div>
+                                <KioskSettings
+                                    config={kioskConfig}
+                                    onConfigChange={handleConfigChange}
+                                    pexelsKey={pexelsKey}
+                                    onPexelsKeyChange={setPexelsKey}
+                                    onSavePexelsKey={savePexelsKey}
+                                />
                             )}
 
                             {activeTab === 'emulator' && (
-                                <div style={{ background: 'var(--bg-secondary)', padding: '30px', borderRadius: '16px', border: '1px solid var(--glass-border)' }}>
-                                    <h3 style={{ marginTop: 0, fontSize: '1.5em' }}>Store d'Émulateurs</h3>
-                                    <p style={{ color: '#aaa', marginBottom: '30px' }}>
-                                        Une sélection des meilleurs émulateurs autonomes (Standalone) pour compléter RetroArch.
-                                    </p>
-
-                                    <div style={{ background: 'linear-gradient(145deg, rgba(30,30,40,0.8), rgba(20,20,30,0.9))', padding: '25px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.1)', marginBottom: '30px', position: 'relative', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
-                                        <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', height: '100%', background: 'var(--accent-color)' }}></div>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '15px' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                                                <div style={{ width: '50px', height: '50px', background: '#333', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/RetroArch_Logo_%282020%29.svg/1200px-RetroArch_Logo_%282020%29.svg.png" alt="Logo" style={{ width: '30px', height: '30px', objectFit: 'contain' }} onError={(e) => (e.currentTarget.style.display = 'none')} />
-                                                </div>
-                                                <div>
-                                                    <h4 style={{ margin: 0, fontSize: '1.4em' }}>RetroArch</h4>
-                                                    <span style={{ fontSize: '0.8em', color: 'var(--accent-color)', fontWeight: 'bold' }}>COEUR DU SYSTÈME</span>
-                                                </div>
-                                            </div>
-                                            <div style={{ padding: '6px 12px', borderRadius: '20px', background: status?.retroarch ? 'rgba(74, 222, 128, 0.2)' : 'rgba(248, 113, 113, 0.2)', color: status?.retroarch ? '#4ade80' : '#f87171', fontSize: '0.75em', fontWeight: 'bold', border: `1px solid ${status?.retroarch ? 'rgba(74, 222, 128, 0.3)' : 'rgba(248, 113, 113, 0.3)'}` }}>
-                                                {status?.retroarch ? 'INSTALLÉ' : 'NON DÉTECTÉ'}
-                                            </div>
-                                        </div>
-                                        <p style={{ fontSize: '0.9em', color: '#ccc', marginBottom: '20px', lineHeight: '1.5', maxWidth: '800px' }}>
-                                            La solution tout-en-un recommandée. Gère la majorité des consoles classiques (NES, SNES, Genesis, Arcade, PS1, N64...).
-                                        </p>
-                                        <div style={{ display: 'flex', gap: '15px' }}>
-                                            {!status?.retroarch ? (
-                                                <button onClick={() => handleInstall('stable')} style={{ padding: '12px 25px', background: 'var(--accent-color)', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                    <Download size={18} /> Installer (Automatique)
-                                                </button>
-                                            ) : (
-                                                <>
-                                                    <button onClick={handleUninstall} style={{ padding: '12px 25px', background: 'rgba(255, 50, 50, 0.1)', color: '#ff5555', border: '1px solid rgba(255, 50, 50, 0.3)', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>
-                                                        Désinstaller
-                                                    </button>
-                                                    <button onClick={openRaConfig} style={{ padding: '12px 25px', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px', cursor: 'pointer', color: 'white', display: 'flex', alignItems: 'center', gap: '10px', fontWeight: 'bold' }}>
-                                                        <Settings size={18} /> Configuration
-                                                    </button>
-                                                    <button onClick={() => setSelectedSection('cores')} style={{ padding: '12px 25px', background: 'rgba(0, 168, 255, 0.1)', border: '1px solid rgba(0, 168, 255, 0.3)', borderRadius: '8px', cursor: 'pointer', color: '#00a8ff', display: 'flex', alignItems: 'center', gap: '10px', fontWeight: 'bold' }}>
-                                                        <Cpu size={18} /> Gestion Intégrale Cores
-                                                    </button>
-                                                </>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {/* CORE MANAGER SUB-SECTION (CONDITIONAL) */}
-                                    {selectedSection === 'cores' && (
-                                        <div style={{ background: 'rgba(0,0,0,0.3)', padding: '25px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)', marginBottom: '30px', animation: 'fadeIn 0.3s' }}>
-                                            <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                <h4 style={{ margin: 0 }}>Gestion Avancée des Cœurs Libretro</h4>
-                                                <button onClick={() => setSelectedSection('')} style={{ background: 'transparent', border: 'none', color: '#888', cursor: 'pointer' }}><X size={20} /></button>
-                                            </div>
-
-                                            <div style={{ padding: '20px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                                <h3 style={{ marginTop: 0, display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.2em' }}>
-                                                    <RefreshCw size={20} className={installing ? "spin" : ""} color={installing ? "var(--accent-color)" : "white"} />
-                                                    Installation Groupée
-                                                </h3>
-                                                <p style={{ color: '#aaa', fontSize: '0.9em', marginBottom: '15px' }}>
-                                                    Scanne l'intégralité du dépôt Libretro et télécharge tous les moteurs compatibles avec RetroMad d'un seul coup.
-                                                </p>
-                                                <button
-                                                    onClick={handleInstallAllCores}
-                                                    disabled={installing}
-                                                    style={{
-                                                        width: '100%',
-                                                        padding: '12px',
-                                                        background: installing ? '#444' : 'linear-gradient(45deg, #2563eb, #3b82f6)',
-                                                        border: 'none',
-                                                        borderRadius: '8px',
-                                                        color: 'white',
-                                                        fontWeight: 'bold',
-                                                        cursor: installing ? 'default' : 'pointer',
-                                                        display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px',
-                                                        boxShadow: installing ? 'none' : '0 4px 15px rgba(37, 99, 235, 0.4)'
-                                                    }}
-                                                >
-                                                    {installing ? (
-                                                        <span>INSTALLATION EN COURS... {progress.percent}%</span>
-                                                    ) : (
-                                                        <>
-                                                            <Zap size={18} fill="white" /> TOUT INSTALLER (BATCH)
-                                                        </>
-                                                    )}
-                                                </button>
-                                                {installing && (
-                                                    <div style={{ marginTop: '15px' }}>
-                                                        <div style={{ height: '6px', background: '#333', borderRadius: '3px', overflow: 'hidden', marginBottom: '5px' }}>
-                                                            <div style={{ width: `${progress.percent}%`, height: '100%', background: 'var(--success-color)', transition: 'width 0.3s ease' }}></div>
-                                                        </div>
-                                                        <div style={{ fontSize: '0.8em', color: '#888', textAlign: 'center' }}>{progress.message}</div>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
-                                        {[
-                                            { name: 'Dolphin', sys: 'GameCube / Wii', color: '#0085d1', url: 'https://dolphin-emu.org/download/', tag: 'Essentiel' },
-                                            { name: 'PCSX2 (Nightly)', sys: 'PlayStation 2', color: '#003791', url: 'https://pcsx2.net/downloads', tag: 'Top Tiers' },
-                                            { name: 'DuckStation', sys: 'PlayStation 1', color: '#e07609', url: 'https://github.com/stenzek/duckstation/releases', tag: 'Best PS1' },
-                                            { name: 'Redream', sys: 'Dreamcast', color: '#f35a0ce8', url: 'https://redream.io/', tag: 'Premium' },
-                                            { name: 'Cemu', sys: 'Wii U', color: '#2d84d1', url: 'https://cemu.info/', tag: 'HD Gaming' },
-                                            { name: 'Ryujinx', sys: 'Nintendo Switch', color: '#ff0040', url: 'https://ryujinx.org/download', tag: 'Switch' },
-                                        ].map((emu, index) => (
-                                            <motion.div key={index} whileHover={{ y: -5, boxShadow: '0 8px 20px rgba(0,0,0,0.3)' }} style={{ background: 'rgba(255,255,255,0.03)', padding: '20px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', height: '100%' }}>
-                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
-                                                    <div style={{ width: '40px', height: '40px', background: `linear-gradient(135deg, ${emu.color}44, ${emu.color}11)`, border: `1px solid ${emu.color}66`, borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: 'white', fontSize: '0.8em', textTransform: 'uppercase' }}>{emu.name.substring(0, 2)}</div>
-                                                    <span style={{ fontSize: '0.65em', padding: '3px 8px', borderRadius: '10px', background: 'rgba(255,255,255,0.1)', color: '#aaa', border: '1px solid rgba(255,255,255,0.05)' }}>{emu.tag}</span>
-                                                </div>
-                                                <h4 style={{ margin: '0 0 5px 0', fontSize: '1.1em' }}>{emu.name}</h4>
-                                                <div style={{ fontSize: '0.8em', color: emu.color, marginBottom: '15px', fontWeight: 'bold', opacity: 0.8 }}>{emu.sys}</div>
-                                                <button onClick={() => window.open(emu.url, '_blank')} style={{ marginTop: 'auto', width: '100%', padding: '10px', background: 'transparent', border: `1px solid ${emu.color}`, color: emu.color, borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '0.9em', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = emu.color; e.currentTarget.style.color = 'white'; }} onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = emu.color; }}>
-                                                    <Download size={14} /> Télécharger
-                                                </button>
-                                            </motion.div>
-                                        ))}
-                                    </div>
-                                    <div style={{ marginTop: '30px', textAlign: 'center', color: '#666', fontSize: '0.8em' }}>* Les liens redirigent vers les sites officiels des éditeurs. RetroMad n'héberge pas ces fichiers.</div>
-                                </div>
+                                <EmulatorStore
+                                    status={status}
+                                    installing={installing}
+                                    progress={progress}
+                                    onInstall={handleInstall}
+                                    onUninstall={handleUninstall}
+                                    onOpenRaConfig={openRaConfig}
+                                    onInstallAllCores={handleInstallAllCores}
+                                    selectedSection={selectedSection}
+                                    setSelectedSection={setSelectedSection}
+                                />
                             )}
 
                         </motion.div>

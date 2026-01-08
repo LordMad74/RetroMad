@@ -18,6 +18,12 @@
   --glass-bg: rgba(255, 255, 255, 0.03);
   --glass-border: rgba(255, 255, 255, 0.08);
   --blur-intensity: 12px;
+  --radius-main: 16px;
+  --radius-card: 12px;
+  --glow-strength: 15px;
+  --border-width: 1px;
+  --border-opacity: 0.1;
+  --border-style: solid;
   --font-sans: 'Outfit', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
@@ -90,7 +96,8 @@ body {
 .glass-panel {
   background: var(--glass-bg);
   backdrop-filter: blur(var(--blur-intensity));
-  border: 1px solid var(--glass-border);
+  border: var(--border-width) var(--border-style) rgba(255, 255, 255, var(--border-opacity));
+  border-radius: var(--radius-main);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
 }
@@ -107,8 +114,9 @@ body {
   /* Contrast text */
   border: none;
   font-weight: 800;
+  border-radius: var(--radius-card);
   transition: all 0.2s ease;
-  box-shadow: 0 0 15px var(--accent-glow);
+  box-shadow: 0 0 var(--glow-strength) var(--accent-glow);
   text-transform: uppercase;
   letter-spacing: 1px;
 }

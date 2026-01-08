@@ -1,4 +1,4 @@
-const { app, BrowserWindow, protocol, ipcMain } = require('electron');
+const { app, BrowserWindow, protocol, ipcMain, Menu } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
 const fs = require('fs');
@@ -36,6 +36,9 @@ function createWindow() {
     const mainWindow = new BrowserWindow({
         width: 1280,
         height: 720,
+        fullscreen: true,
+        frame: false,
+        autoHideMenuBar: true,
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
@@ -44,6 +47,9 @@ function createWindow() {
         },
         backgroundColor: '#0f0f13'
     });
+
+    // Enlever le menu complètement
+    Menu.setApplicationMenu(null);
 
     const startUrl = process.env.ELECTRON_START_URL || 'http://localhost:5173';
 
@@ -244,6 +250,23 @@ ipcMain.handle('db-import-xml', async (event, system) => {
     return await databaseManager.importGamelist(system);
 });
 
+ipcMain.handle('db-generate-ai-description', async (event, { gameName, system }) => {
+    // Simulated AI generation - In a real app, call OpenAI/Gemini here
+    const adverbs = ["Totalement", "Incroyablement", "Vraiment", "Purement"];
+    const adjectives = ["épique", "légendaire", "captivant", "révolutionnaire", "culte", "inoubliable"];
+    const actions = ["explore un monde", "défie les lois de", "propose une aventure", "redéfinit le genre"];
+    const genres = {
+        'NES': '8-bit', 'SNES': '16-bit', 'PSX': '32-bit / 3D', 'MEGADRIVE': 'Sega', 'ARCADE': 'Arcade'
+    };
+
+    const desc = `${gameName} est un jeu ${adjectives[Math.floor(Math.random() * adjectives.length)]} sur ${genres[system] || system}. 
+    Le joueur ${actions[Math.floor(Math.random() * actions.length)]} dans une expérience ${adverbs[Math.floor(Math.random() * adverbs.length)]} ${adjectives[Math.floor(Math.random() * adjectives.length)]}. 
+    Un titre indispensable pour tous les fans de RetroMad.`;
+
+    return { description: desc };
+});
+
+
 ipcMain.handle('emu-scan-systems', async () => {
     return await emulatorManager.getConfiguredSystems();
 });
@@ -297,6 +320,10 @@ ipcMain.on('clean-roms', async (event, { systemId, execute }) => {
     await romCleaner.processDirectory(targetPath, execute, event.sender);
     event.sender.send('clean-log', `✅ Nettoyage terminé.`);
     event.sender.send('clean-roms-reply', { success: true });
+});
+
+ipcMain.on('app-quit', () => {
+    app.quit();
 });
 
 /**

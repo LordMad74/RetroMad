@@ -115,5 +115,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
         const sub = (event, value) => callback(value);
         ipcRenderer.on('remote-action', sub);
         return () => ipcRenderer.removeListener('remote-action', sub);
-    }
+    },
+    quitApp: () => ipcRenderer.send('app-quit')
 });

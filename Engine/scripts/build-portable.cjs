@@ -103,6 +103,19 @@ if (fs.existsSync(launcherSrc)) {
     console.log('✅ Copied Lancer_RetroMad.ps1');
 }
 
+// 5. Cleanup Locales (SAVE SPACE)
+console.log('\n🧹 Cleaning up unnecessary locales...');
+const localesDir = path.join(DIST_DIR, 'locales');
+if (fs.existsSync(localesDir)) {
+    const keptLocales = ['en-US.pak', 'fr.pak', 'en-GB.pak'];
+    fs.readdirSync(localesDir).forEach(file => {
+        if (!keptLocales.includes(file)) {
+            fs.unlinkSync(path.join(localesDir, file));
+        }
+    });
+    console.log('✅ Cleaned up locales (kept en/fr)');
+}
+
 
 console.log('\n✨ Full Portable Build (Lite) Complete!');
 console.log(`👉 Export located at: ${DIST_DIR}`);

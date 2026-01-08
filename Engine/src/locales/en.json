@@ -1,0 +1,44 @@
+{
+    "common": {
+        "loading": "Loading...",
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "back": "Back",
+        "search": "Search...",
+        "none": "None",
+        "release_date": "Release Date",
+        "developer": "Developer",
+        "genre": "Genre",
+        "players": "Players",
+        "players_short": "P",
+        "na": "N/A",
+        "unknown": "Unknown",
+        "rating": "Rating"
+    },
+    "nav": {
+        "manufacturers": "Manufacturers",
+        "systems": "Systems",
+        "webplay": "WebPlay",
+        "admin": "Admin"
+    },
+    "kiosk": {
+        "exit_hint": "Select • Enter | Exit: Ctrl+Shift+Q",
+        "attract_mode": "ATTRACT MODE",
+        "resume_hint": "Press any key to resume",
+        "no_games": "No games found",
+        "no_description": "No description available for this game."
+    },
+    "admin": {
+        "dashboard": "Dashboard",
+        "systems": "Systems",
+        "scraper": "Scraper",
+        "retroarch": "RetroArch",
+        "themes": "Themes",
+        "kiosk": "Kiosk",
+        "saves": "Saves",
+        "gamepad": "Gamepads",
+        "maintenance": "Maintenance"
+    }
+}

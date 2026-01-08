@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from './contexts/LanguageContext';
+
 import AdminPanel from './AdminPanel';
 import GameList from './GameList';
 import WebPlayPanel from './WebPlayPanel';
@@ -7,7 +9,7 @@ import ManufacturersView from './ManufacturersView';
 import { motion } from 'framer-motion';
 import { useAudio } from './hooks/useAudio';
 import { useGamepad } from './hooks/useGamepad';
-import { Volume2, VolumeX } from 'lucide-react';
+import { Volume2, VolumeX, Power, Monitor } from 'lucide-react';
 
 // Initial fallback systems, will be replaced by config
 const DEFAULT_SYSTEMS = [
@@ -19,7 +21,9 @@ const DEFAULT_SYSTEMS = [
 ];
 
 function App() {
+    const { t, language, setLanguage } = useTranslation();
     const [activeTab, setActiveTab] = useState('manufacturers');
+
     const [selectedSystem, setSelectedSystem] = useState<string | null>(null);
     const [selectedManufacturer, setSelectedManufacturer] = useState<string | null>(null);
     const [systems, setSystems] = useState<any[]>(DEFAULT_SYSTEMS);
@@ -154,6 +158,13 @@ function App() {
         playSound('back');
     };
 
+    const handleKioskEnter = async () => {
+        const theme = kioskConfig?.theme || 'neon_arcade';
+        await window.electronAPI.setConfig('kiosk', { enabled: true, theme });
+        setKioskConfig({ enabled: true, theme });
+        playSound('success');
+    };
+
     const handleManufacturerSelect = (manName: string) => {
         playSound('click');
         setSelectedManufacturer(manName);
@@ -187,7 +198,7 @@ function App() {
         : systems;
 
     if (kioskConfig?.enabled) {
-        return <KioskMode themeName={kioskConfig.theme} backgroundEffect={(kioskConfig as any).effect || 'none'} onExit={handleKioskExit} />;
+        return <KioskMode config={kioskConfig} onExit={handleKioskExit} />;
     }
 
     const navButton = (tabName: string, label: string, onClick: () => void) => (
@@ -221,7 +232,8 @@ function App() {
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
-                zIndex: 10
+                zIndex: 10,
+                WebkitAppRegion: 'drag'
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <div style={{ width: '30px', height: '30px', background: 'var(--accent-color)', borderRadius: '6px', transform: 'rotate(45deg)', boxShadow: '0 0 10px var(--accent-glow)' }}></div>
@@ -231,10 +243,30 @@ function App() {
                 </div>
 
                 <nav style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                    {navButton('manufacturers', 'Constructeurs', () => { setActiveTab('manufacturers'); setSelectedManufacturer(null); })}
-                    {navButton('home', 'Consoles', () => { setActiveTab('home'); setSelectedSystem(null); setSelectedManufacturer(null); })}
-                    {navButton('webplay', 'WebPlay', () => setActiveTab('webplay'))}
-                    {navButton('admin', 'Admin', () => setActiveTab('admin'))}
+                    {navButton('manufacturers', t('nav.manufacturers'), () => { setActiveTab('manufacturers'); setSelectedManufacturer(null); })}
+                    {navButton('home', t('nav.systems'), () => { setActiveTab('home'); setSelectedSystem(null); setSelectedManufacturer(null); })}
+                    {navButton('webplay', t('nav.webplay'), () => setActiveTab('webplay'))}
+                    {navButton('admin', t('nav.admin'), () => setActiveTab('admin'))}
+
+                    <div style={{ display: 'flex', background: 'rgba(255,255,255,0.05)', borderRadius: '20px', padding: '2px', marginLeft: '10px' }}>
+                        <button
+                            onClick={() => { setLanguage('fr'); playSound('click'); }}
+                            style={{
+                                padding: '4px 8px', borderRadius: '15px', border: 'none', fontSize: '10px', cursor: 'pointer',
+                                background: language === 'fr' ? 'var(--accent-color)' : 'transparent',
+                                color: language === 'fr' ? 'white' : 'var(--text-secondary)'
+                            }}
+                        >FR</button>
+                        <button
+                            onClick={() => { setLanguage('en'); playSound('click'); }}
+                            style={{
+                                padding: '4px 8px', borderRadius: '15px', border: 'none', fontSize: '10px', cursor: 'pointer',
+                                background: language === 'en' ? 'var(--accent-color)' : 'transparent',
+                                color: language === 'en' ? 'white' : 'var(--text-secondary)'
+                            }}
+                        >EN</button>
+                    </div>
+
 
                     <select
                         onChange={(e) => {
@@ -260,16 +292,93 @@ function App() {
                     </select>
 
                     <button
+                        onClick={handleKioskEnter}
+                        style={{
+                            background: 'rgba(0, 255, 136, 0.1)',
+                            border: '1px solid rgba(0, 255, 136, 0.4)',
+                            color: '#00ff88',
+                            cursor: 'pointer',
+                            padding: '8px',
+                            marginLeft: '10px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            borderRadius: '50%',
+                            transition: 'all 0.2s',
+                            WebkitAppRegion: 'no-drag'
+                        }}
+                        title="Mode Kiosk"
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'rgba(0, 255, 136, 0.3)';
+                            playSound('hover');
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(0, 255, 136, 0.1)';
+                        }}
+                    >
+                        <Monitor size={18} />
+                    </button>
+
+                    <button
                         onClick={() => {
                             if (bgmMuted) startBGM();
                             else stopBGM();
                             setBgmMuted(!bgmMuted);
                             playSound('click');
                         }}
-                        style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '5px', marginLeft: '5px', display: 'flex', alignItems: 'center' }}
+                        style={{
+                            background: 'rgba(0, 170, 255, 0.1)',
+                            border: '1px solid rgba(0, 170, 255, 0.4)',
+                            color: '#00aaff',
+                            cursor: 'pointer',
+                            padding: '8px',
+                            marginLeft: '10px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            borderRadius: '50%',
+                            transition: 'all 0.2s',
+                            WebkitAppRegion: 'no-drag'
+                        }}
                         title={bgmMuted ? "Activer la musique" : "Couper la musique"}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'rgba(0, 170, 255, 0.3)';
+                            playSound('hover');
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(0, 170, 255, 0.1)';
+                        }}
                     >
                         {bgmMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+                    </button>
+
+                    <button
+                        onClick={() => {
+                            if (window.confirm('Quitter RetroMad ?')) {
+                                window.electronAPI.quitApp();
+                            }
+                        }}
+                        style={{
+                            background: 'rgba(255, 68, 68, 0.1)',
+                            border: '1px solid rgba(255, 68, 68, 0.4)',
+                            color: '#ff4444',
+                            cursor: 'pointer',
+                            padding: '8px',
+                            marginLeft: '15px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            borderRadius: '50%',
+                            transition: 'all 0.2s',
+                            WebkitAppRegion: 'no-drag'
+                        }}
+                        title="Quitter l'application"
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'rgba(255, 68, 68, 0.3)';
+                            playSound('hover');
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(255, 68, 68, 0.1)';
+                        }}
+                    >
+                        <Power size={18} />
                     </button>
                 </nav>
             </header>

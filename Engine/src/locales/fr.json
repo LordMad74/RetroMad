@@ -1,0 +1,44 @@
+{
+    "common": {
+        "loading": "Chargement...",
+        "save": "Enregistrer",
+        "cancel": "Annuler",
+        "delete": "Supprimer",
+        "edit": "Modifier",
+        "back": "Retour",
+        "search": "Rechercher...",
+        "none": "Aucun",
+        "release_date": "Date de sortie",
+        "developer": "Développeur",
+        "genre": "Genre",
+        "players": "Joueurs",
+        "players_short": "P",
+        "na": "N/A",
+        "unknown": "Inconnu",
+        "rating": "Note"
+    },
+    "nav": {
+        "manufacturers": "Constructeurs",
+        "systems": "Consoles",
+        "webplay": "WebPlay",
+        "admin": "Admin"
+    },
+    "kiosk": {
+        "exit_hint": "Sélectionner • Entrer | Sortie: Ctrl+Shift+Q",
+        "attract_mode": "MODE DÉMO",
+        "resume_hint": "Appuyez sur une touche pour reprendre",
+        "no_games": "Aucun jeu trouvé",
+        "no_description": "Aucune description disponible pour ce jeu."
+    },
+    "admin": {
+        "dashboard": "Tableau de Bord",
+        "systems": "Systèmes",
+        "scraper": "Scraper",
+        "retroarch": "RetroArch",
+        "themes": "Thèmes",
+        "kiosk": "Kiosk",
+        "saves": "Sauvegardes",
+        "gamepad": "Manettes",
+        "maintenance": "Maintenance"
+    }
+}

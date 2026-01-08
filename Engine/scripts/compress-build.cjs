@@ -9,7 +9,8 @@ console.log(`📦 Compressing Build...`);
 console.log(`Src: ${BUILD_DIR}`);
 console.log(`Dest: ${OUTPUT_FILE}`);
 
-const cmd = `"${sevenBin.path7za}" a -t7z -mx=9 -ms=on -mmt=on "${OUTPUT_FILE}" "${BUILD_DIR}"`;
+// Max compression parameters: LZMA2, 128MB dictionary, Ultra mode
+const cmd = `"${sevenBin.path7za}" a -t7z -m0=lzma2 -mx=9 -md=128m -ms=on -mmt=on "${OUTPUT_FILE}" "${BUILD_DIR}"`;
 
 try {
     execSync(cmd, { stdio: 'inherit' });
