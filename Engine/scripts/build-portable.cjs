@@ -76,7 +76,8 @@ const CONTENT_SRC = path.resolve(PROJECT_ROOT, '../Content');
 console.log('📂 Copying Essential Media assets...');
 const essentialMedia = [
     'media/images/themes',
-    'media/manufacturers'
+    'media/manufacturers',
+    'media/videos'
 ];
 
 essentialMedia.forEach(subPath => {
