@@ -19,6 +19,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: opacity 0.8s ease-in-out;
         }
 
         #fallback {
@@ -31,6 +32,11 @@
             letter-spacing: 15px;
             animation: pulse 2s infinite;
             display: none;
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        .fade-out {
+            opacity: 0 !important;
         }
 
         @keyframes pulse {
@@ -64,24 +70,31 @@
         video.src = 'media://media/videos/splash.mp4';
 
         const finishSplash = () => {
-            if (window.electronAPI && window.electronAPI.splashFinished) {
-                window.electronAPI.splashFinished();
-            }
+            // Apply fade out effect
+            video.classList.add('fade-out');
+            fallback.classList.add('fade-out');
+
+            // Wait for animation to finish before closing window
+            setTimeout(() => {
+                if (window.electronAPI && window.electronAPI.splashFinished) {
+                    window.electronAPI.splashFinished();
+                }
+            }, 800);
         };
 
         video.onerror = () => {
             video.style.display = 'none';
             fallback.style.display = 'block';
-            // If error, wait 3 seconds on fallback then finish
-            setTimeout(finishSplash, 3000);
+            // If error, wait 2 seconds on fallback then fade out
+            setTimeout(finishSplash, 2000);
         };
 
         video.onended = () => {
             finishSplash();
         };
 
-        // Safety timeout (max 10 seconds)
-        setTimeout(finishSplash, 10000);
+        // Safety timeout (max 12 seconds)
+        setTimeout(finishSplash, 12000);
     </script>
 </body>
 

@@ -358,8 +358,12 @@ ipcMain.on('clean-roms', async (event, { systemId, execute }) => {
 });
 
 ipcMain.on('app-quit', () => {
-    app.quit();
+    if (psBridge) {
+        try { psBridge.kill(); } catch (e) { }
+    }
+    app.exit(0);
 });
+
 
 ipcMain.on('splash-finished', () => {
     const showApp = () => {
